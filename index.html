@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comment review queue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#E7ECEF; --card:#FFFFFF; --ink:#131C24; --muted:#5C6B78;
+    --rule:#D0D9DF; --rule-soft:#E4EAEE;
+    --approve:#0E6E52; --approve-bg:#E2F0EB;
+    --modify:#8A5A05; --modify-bg:#F7EEDD;
+    --skip:#963030; --skip-bg:#F6E6E6;
+    --meter:#2B4C7E;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--page); color:var(--ink);
+    font-family:Inter,system-ui,sans-serif; font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:36px 24px 80px}
+
+  header{border-bottom:2px solid var(--ink); padding-bottom:18px; margin-bottom:8px}
+  .eyebrow{
+    font-family:Archivo,sans-serif; font-size:11px; font-weight:600;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 6px
+  }
+  h1{font-family:Archivo,sans-serif; font-size:30px; font-weight:600; margin:0; letter-spacing:-.01em}
+  .tally{display:flex; gap:26px; margin-top:14px; flex-wrap:wrap}
+  .tally div{font-family:Archivo,sans-serif; font-size:13px; color:var(--muted)}
+  .tally b{font-size:19px; color:var(--ink); font-weight:600; margin-right:5px}
+
+  .card{
+    background:var(--card); border:1px solid var(--rule); border-radius:3px;
+    margin-top:22px; overflow:hidden;
+  }
+  .card.done{opacity:.5}
+  .cardtop{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    padding:16px 20px; border-bottom:1px solid var(--rule-soft); flex-wrap:wrap;
+  }
+  .who{font-family:Archivo,sans-serif; font-size:17px; font-weight:600; margin:0}
+  .headline{font-size:13px; color:var(--muted); margin:2px 0 0}
+  .stats{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-top:7px}
+  .stats span{margin-right:14px}
+
+  .meterbox{text-align:right; min-width:120px}
+  .meterlabel{
+    font-family:Archivo,sans-serif; font-size:10px; font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted)
+  }
+  .meterval{font-family:Archivo,sans-serif; font-size:26px; font-weight:600; line-height:1.1}
+  .meter{display:flex; gap:2px; justify-content:flex-end; margin-top:5px}
+  .meter i{width:7px; height:14px; background:var(--rule); display:block}
+  .meter i.on{background:var(--meter)}
+
+  .body{display:grid; grid-template-columns:1fr 1fr; gap:0}
+  @media(max-width:880px){.body{grid-template-columns:1fr}}
+  .col{padding:20px}
+  .col + .col{border-left:1px solid var(--rule-soft)}
+  @media(max-width:880px){.col + .col{border-left:none; border-top:1px solid var(--rule-soft)}}
+
+  .lbl{
+    font-family:Archivo,sans-serif; font-size:10px; font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    margin:0 0 8px; display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .posttext{
+    font-size:14.5px; white-space:pre-wrap; max-height:280px; overflow-y:auto;
+    padding-right:8px; margin:0;
+  }
+  .posttext.clipped{max-height:150px}
+  .more{
+    background:none; border:none; padding:6px 0 0; cursor:pointer;
+    font-family:Archivo,sans-serif; font-size:12px; font-weight:600; color:var(--meter);
+  }
+  .embedwrap{margin-top:16px; border-top:1px solid var(--rule-soft); padding-top:14px}
+  .embedwrap iframe{width:100%; height:420px; border:1px solid var(--rule); border-radius:3px; background:#fafbfc}
+
+  .reason{
+    background:#F4F7F9; border-left:3px solid var(--meter); padding:10px 13px;
+    font-size:13.5px; margin:0 0 16px; border-radius:0;
+  }
+  textarea{
+    width:100%; min-height:120px; resize:vertical; padding:12px 13px;
+    border:1px solid var(--rule); border-radius:3px; background:#FCFDFD;
+    font-family:Inter,sans-serif; font-size:14.5px; line-height:1.6; color:var(--ink);
+  }
+  textarea:focus{outline:2px solid var(--meter); outline-offset:-1px; border-color:transparent}
+  .count{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted)}
+  .count.over{color:var(--skip); font-weight:700}
+
+  .urn{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--muted);
+    word-break:break-all; margin-top:12px; padding-top:10px; border-top:1px dashed var(--rule);
+  }
+
+  .actions{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap}
+  button.act{
+    font-family:Archivo,sans-serif; font-size:13px; font-weight:600; cursor:pointer;
+    padding:9px 16px; border-radius:3px; border:1px solid transparent;
+  }
+  .approve{background:var(--approve-bg); color:var(--approve); border-color:#B9D8CD}
+  .modify{background:var(--modify-bg); color:var(--modify); border-color:#E3D2AC}
+  .skip{background:var(--skip-bg); color:var(--skip); border-color:#E0C0C0}
+  button.act:hover{filter:brightness(.96)}
+  button.act:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+
+  .verdict{
+    padding:14px 20px; font-family:Archivo,sans-serif; font-size:13px; font-weight:600;
+    border-top:1px solid var(--rule-soft);
+  }
+  .v-approved{background:var(--approve-bg); color:var(--approve)}
+  .v-modify{background:var(--modify-bg); color:var(--modify)}
+  .v-skipped{background:var(--skip-bg); color:var(--skip)}
+
+  .skipcard{
+    background:var(--card); border:1px solid var(--rule); border-left:3px solid var(--skip);
+    border-radius:3px; margin-top:22px; padding:16px 20px;
+  }
+  .skipcard .who{font-size:15px}
+  .skipnote{font-size:13.5px; color:var(--muted); margin:6px 0 0}
+
+  footer{
+    margin-top:36px; padding-top:18px; border-top:1px solid var(--rule);
+    font-size:13px; color:var(--muted);
+  }
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">LinkedIn engagement &middot; run 21 Jul 2026</p>
+  <h1>Comment review queue</h1>
+  <div class="tally">
+    <div><b id="t-pending">1</b>awaiting review</div>
+    <div><b id="t-skipped">1</b>skipped by filter</div>
+    <div><b id="t-done">0</b>decided</div>
+  </div>
+</header>
+
+<div id="queue"></div>
+
+<footer>
+  Drafts are held here until you decide. Nothing posts to LinkedIn without an approval.
+</footer>
+</div>
+
+<script>
+// Swap this constant for the Apps Script endpoint when going live:
+// const FEED_URL = 'https://script.google.com/macros/s/AKfycby.../exec?action=list';
+// const POST_URL = 'https://script.google.com/macros/s/AKfycby.../exec';
+
+const POSTS = [
+  {
+    id: 1,
+    author: "Sanchit Govil",
+    headline: "Co-Founder, Lal10. Operator at the intersection of fashion, supply chain, and capital \u00b7 Forbes 30U30",
+    posted: "4d ago",
+    reactions: 173,
+    comments: 9,
+    shareUrn: "urn:li:share:7483757000162652160",
+    activityUrn: "urn:li:activity:7483757003551432704",
+    decision: "comment",
+    relevance: 9,
+    reason: "Operating story about digitising a fragmented supply chain and why delivery beats pitch. Sits close to frontline execution and adoption work.",
+    draft: "The 11 PM warehouse line is where delivery beats pitch, we saw that in telecom distribution too, where trust in data is hard to establish",
+    text: `PhonePe. Groww. Myntra. Curefit. Meesho.
+Over 200 startups. $25 billion in combined valuation. Six unicorns. Every founder once sat in the same building.
+
+Silicon Valley calls its version the PayPal Mafia. India built its own - quieter, less mythologised, just as real. Call it the Flipkart Mafia.
+
+In 2015, I was right inside it. I joined Flipkart's Supply chain design and new initiatives team - the exact window when the company's former COO says it was deliberately hiring for one trait: audacity. Not credentials or titles. A high bar for figuring things out when nothing was documented and nothing was easy.
+
+That trait didn't stay inside Flipkart's walls. It walked out, repeatedly, and built a second ecosystem. Flipsters have started over 200 companies, raised more than $10 billion, and none of it looks accidental once you see the pattern.
+
+Because here's what nobody tells you about that culture: it doesn't produce people who chase incremental problems. It produces people allergic to them.
+
+I left Flipkart's supply chain function and spent the next eight years in India's apparel manufacturing sector - arguably the most fragmented, least-digitized part of the entire economy.
+
+Here, The pitch is not the win. The delivery is the win. I learned that standing in a warehouse at 11 PM, rupee by rupee, watching an order either ship on time or blow a client relationship built over years.
+
+Flipkart taught me to build systems where none existed.
+
+Lal10 is that same instinct, pointed at a $47 billion problem nobody wanted to touch: India's apparel manufacturing supply chain, still running on phone calls, WhatsApp, and trust built over decades - not data.
+
+Same audacity put in a Different warehouse.`
+  },
+  {
+    id: 2,
+    author: "Rishabh Kumar",
+    headline: "From 0 \u2192 1 \u2192 100 with AI",
+    posted: "13h ago",
+    reactions: 206,
+    comments: 9,
+    shareUrn: "urn:li:share:7484991797128085504",
+    activityUrn: "urn:li:activity:7485177994400006144",
+    decision: "skip",
+    relevance: 1,
+    reason: "One line caption on an image post. No claim or idea in the text to respond to, and the image content is not readable by the pipeline.",
+    draft: "",
+    text: "Laptops have a new meaning now"
+  }
+];
+
+const q = document.getElementById('queue');
+let decided = 0;
+
+function words(s){ return s.trim() ? s.trim().split(/\s+/).length : 0; }
+function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+POSTS.forEach(p => {
+  if (p.decision === 'skip') {
+    const el = document.createElement('div');
+    el.className = 'skipcard';
+    el.innerHTML =
+      '<p class="who">' + esc(p.author) + '</p>' +
+      '<p class="skipnote"><strong>Skipped.</strong> ' + esc(p.reason) + '</p>' +
+      '<div class="urn">' + esc(p.activityUrn) + '</div>';
+    q.appendChild(el);
+    return;
+  }
+
+  const el = document.createElement('div');
+  el.className = 'card';
+  const meter = Array.from({length:10}, (_,i) =>
+    '<i class="' + (i < p.relevance ? 'on' : '') + '"></i>').join('');
+
+  el.innerHTML =
+    '<div class="cardtop">' +
+      '<div>' +
+        '<p class="who">' + esc(p.author) + '</p>' +
+        '<p class="headline">' + esc(p.headline) + '</p>' +
+        '<div class="stats">' +
+          '<span>' + p.reactions + ' reactions</span>' +
+          '<span>' + p.comments + ' comments</span>' +
+          '<span>' + esc(p.posted) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="meterbox">' +
+        '<div class="meterlabel">Relevance</div>' +
+        '<div class="meterval">' + p.relevance + '<span style="font-size:14px;color:var(--muted)">/10</span></div>' +
+        '<div class="meter">' + meter + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="body">' +
+      '<div class="col">' +
+        '<p class="lbl">What they posted</p>' +
+        '<p class="posttext clipped" id="txt-' + p.id + '">' + esc(p.text) + '</p>' +
+        '<button class="more" id="more-' + p.id + '">Show full post</button>' +
+        '<div class="embedwrap">' +
+          '<p class="lbl">As it appears on LinkedIn</p>' +
+          '<iframe loading="lazy" title="Post by ' + esc(p.author) + '" ' +
+            'src="https://www.linkedin.com/embed/feed/update/' + p.shareUrn + '"></iframe>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="col">' +
+        '<p class="lbl">Why this one</p>' +
+        '<p class="reason">' + esc(p.reason) + '</p>' +
+        '<p class="lbl">Your comment ' +
+          '<span class="count" id="c-' + p.id + '"></span></p>' +
+        '<textarea id="ta-' + p.id + '" aria-label="Draft comment">' + esc(p.draft) + '</textarea>' +
+        '<div class="actions">' +
+          '<button class="act approve" data-a="approved" data-id="' + p.id + '">Approve and post</button>' +
+          '<button class="act modify" data-a="modify" data-id="' + p.id + '">Send back for a rewrite</button>' +
+          '<button class="act skip" data-a="skipped" data-id="' + p.id + '">Do not comment</button>' +
+        '</div>' +
+        '<div class="urn">' + esc(p.activityUrn) + '</div>' +
+      '</div>' +
+    '</div>';
+
+  q.appendChild(el);
+
+  const ta = el.querySelector('#ta-' + p.id);
+  const cnt = el.querySelector('#c-' + p.id);
+  const upd = () => {
+    const n = words(ta.value);
+    cnt.textContent = n + ' words';
+    cnt.className = 'count' + (n > 40 ? ' over' : '');
+  };
+  ta.addEventListener('input', upd); upd();
+
+  const txt = el.querySelector('#txt-' + p.id);
+  const more = el.querySelector('#more-' + p.id);
+  more.addEventListener('click', () => {
+    const clipped = txt.classList.toggle('clipped');
+    more.textContent = clipped ? 'Show full post' : 'Collapse post';
+  });
+
+  el.querySelectorAll('button.act').forEach(b => {
+    b.addEventListener('click', () => {
+      const action = b.dataset.a;
+      const v = document.createElement('div');
+      v.className = 'verdict v-' + action;
+      v.textContent =
+        action === 'approved' ? 'Approved. Queued to post in a few minutes.' :
+        action === 'modify'   ? 'Sent back. A fresh draft will appear in the next run.' :
+                                'Left alone. Nothing will be posted on this one.';
+      el.querySelector('.body').remove();
+      el.appendChild(v);
+      el.classList.add('done');
+
+      decided++;
+      document.getElementById('t-done').textContent = decided;
+      document.getElementById('t-pending').textContent =
+        Math.max(0, POSTS.filter(x => x.decision === 'comment').length - decided);
+
+      // Live version posts the decision back to Apps Script:
+      // fetch(POST_URL, {method:'POST', body: JSON.stringify({
+      //   urn: p.activityUrn, action: action, comment: ta.value
+      // })});
+    });
+  });
+});
+</script>
+</body>
+</html>
