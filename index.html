@@ -19,9 +19,9 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--tx)}
-body{font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 
 .top{position:sticky;top:0;z-index:40;display:flex;align-items:center;
   justify-content:space-between;gap:12px;padding:9px 16px;
@@ -29,19 +29,19 @@ body{font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.6;
   -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:9px}
 .mark{width:22px;height:22px;border-radius:7px;flex:none;
-  background:linear-gradient(140deg,var(--gold),#8C6B32);display:grid;
+  background:linear-gradient(140deg,#D9B36C,#8C6B32);display:grid;
   place-items:center;font-family:Sora,sans-serif;font-size:11px;
   font-weight:600;color:#1A1408}
 .brand b{font-family:Sora,sans-serif;font-size:12.5px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase}
-.pending{display:flex;align-items:baseline;gap:6px;flex:none;padding:5px 11px;
+.pending{display:flex;align-items:baseline;gap:6px;padding:5px 11px;
   border-radius:100px;background:var(--goldbg);border:1px solid #4E3F24}
 .pending b{font-family:Sora,sans-serif;font-size:14px;font-weight:600;
   color:var(--gold);line-height:1}
 .pending span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#A98A50}
 
 .rail{display:flex;gap:5px;padding:13px 16px 0;max-width:1120px;margin:0 auto}
-.rail i{flex:1;height:3px;border-radius:2px;background:var(--line2);transition:background .25s}
+.rail i{flex:1;height:3px;border-radius:2px;background:var(--line2)}
 .rail i.done{background:#4A4A5A}
 .rail i.now{background:var(--gold)}
 
@@ -73,7 +73,8 @@ body{font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.6;
 }
 
 .panel{background:var(--card);border:1px solid var(--line);
-  border-radius:18px;overflow:hidden}
+  border-radius:18px;overflow:hidden;margin-bottom:16px}
+.panel:last-child{margin-bottom:0}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:13px 16px;border-bottom:1px solid var(--line)}
 .ph span{font-family:Sora,sans-serif;font-size:10.5px;font-weight:500;
@@ -86,20 +87,18 @@ body{font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.6;
 textarea{width:100%;min-height:132px;resize:vertical;display:block;padding:14px;
   border-radius:14px;border:1px solid var(--line2);background:var(--card2);
   color:var(--tx);font-family:Inter,sans-serif;font-size:15px;line-height:1.65}
-textarea::placeholder{color:var(--tx3)}
 textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .cnt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3)}
 .cnt.over{color:var(--rose)}
 
-.post{font-size:14.5px;white-space:pre-wrap;color:var(--tx2);max-height:0;
-  overflow:hidden;transition:max-height .3s ease}
-.post.open{max-height:2600px}
+.post{font-size:14.5px;white-space:pre-wrap;color:var(--tx2);display:none;
+  padding:0 16px 16px}
+.post.open{display:block}
 .toggle{width:100%;background:none;border:0;cursor:pointer;padding:13px 16px;
   display:flex;align-items:center;justify-content:space-between;
   font-family:Sora,sans-serif;font-size:10.5px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
-.toggle b{font-size:15px;color:var(--gold);transition:transform .3s;line-height:1}
-.toggle.open b{transform:rotate(45deg)}
+.toggle b{font-size:15px;color:var(--gold);line-height:1}
 
 .urn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);
   word-break:break-all;padding:12px 16px;border-top:1px solid var(--line)}
@@ -111,9 +110,8 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .barin{max-width:1120px;margin:0 auto;display:flex;gap:8px}
 .btn{font-family:Sora,sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;
   border-radius:13px;border:1px solid transparent;padding:13px 14px;display:flex;
-  align-items:center;justify-content:center;white-space:nowrap;transition:transform .12s}
+  align-items:center;justify-content:center;white-space:nowrap}
 .btn:active{transform:scale(.97)}
-.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .bgo{flex:1;background:var(--mint);color:#062015;font-weight:600}
 .bre{background:var(--amberbg);color:var(--amber);border-color:#4A3A18}
 .bno{background:var(--rosebg);color:var(--rose);border-color:#4A2020}
@@ -121,14 +119,14 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 @media(max-width:560px){.btn{padding:12px 10px;font-size:12.5px;border-radius:12px}}
 
 .flash{position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(86px + env(safe-area-inset-bottom));z-index:60;padding:11px 18px;
+  bottom:calc(92px + env(safe-area-inset-bottom));z-index:60;padding:11px 18px;
   border-radius:100px;font-family:Sora,sans-serif;font-size:13px;
   background:var(--card2);border:1px solid var(--line2);opacity:0;
-  pointer-events:none;transition:opacity .25s,transform .25s;
-  max-width:calc(100vw - 32px)}
-.flash.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+  pointer-events:none;transition:opacity .25s;max-width:calc(100vw - 32px)}
+.flash.show{opacity:1}
 
-.fin{text-align:center;padding:56px 20px}
+.fin{display:none;text-align:center;padding:56px 20px}
+.fin.on{display:block}
 .fin h2{font-family:Sora,sans-serif;font-size:26px;font-weight:600;
   margin:0 0 8px;letter-spacing:-.02em}
 .fin p{color:var(--tx2);margin:0 auto;max-width:340px}
@@ -142,8 +140,8 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
   justify-content:space-between;align-items:center;font-family:Sora,sans-serif;
   font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2)}
 .dtog b{color:var(--gold);font-family:'JetBrains Mono',monospace;letter-spacing:0}
-.dlist{max-height:0;overflow:hidden;transition:max-height .3s ease}
-.dlist.open{max-height:1400px}
+.dlist{display:none}
+.dlist.open{display:block}
 .drow{background:var(--card);border:1px solid var(--line);
   border-left:2px solid var(--rose);border-radius:12px;padding:14px 16px;margin-top:8px}
 .drow p{margin:0}
@@ -152,7 +150,6 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .undo{margin-top:11px;background:none;border:1px solid var(--line2);
   color:var(--tx);border-radius:10px;padding:8px 13px;cursor:pointer;
   font-family:Sora,sans-serif;font-size:12px}
-.undo:hover{border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body>
@@ -164,9 +161,16 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 
 <div class="rail" id="rail"></div>
 <div class="shell" id="stage"></div>
+
+<div class="fin" id="fin">
+  <div class="tick">&#10003;</div>
+  <h2>Queue cleared</h2>
+  <p id="finmsg">Next batch lands after the morning run.</p>
+</div>
+
 <div class="drawer" id="drawer"></div>
 
-<div class="bar" id="bar" hidden>
+<div class="bar" id="bar">
   <div class="barin">
     <button class="btn bgo" data-a="approved">Approve &amp; post</button>
     <button class="btn bre" data-a="rewrite">Rewrite</button>
@@ -178,144 +182,278 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <div class="flash" id="flash"></div>
 
 <script>
-/* Live wiring, swap in when Apps Script is ready:
-   const FEED = 'https://script.google.com/macros/s/AKfycby.../exec?action=list';
-   const SEND = 'https://script.google.com/macros/s/AKfycby.../exec';   */
+var POSTS = [
+  {
+    id: 1,
+    author: "Sanchit Govil",
+    role: "Co-Founder, Lal10 \u00b7 Operator at the intersection of fashion, supply chain and capital \u00b7 Forbes 30U30",
+    when: "4 days ago",
+    shareUrn: "urn:li:share:7483757000162652160",
+    activityUrn: "urn:li:activity:7483757003551432704",
+    embedHeight: 1403,
+    relevance: 9,
+    reason: "An operating story about digitising a fragmented supply chain, and why delivery beats the pitch. Close to frontline execution and adoption work.",
+    draft: "The 11 PM warehouse line is where delivery beats pitch, we saw that in telecom distribution too, where trust in data is hard to establish",
+    text: "PhonePe. Groww. Myntra. Curefit. Meesho.\nOver 200 startups. $25 billion in combined valuation. Six unicorns. Every founder once sat in the same building.\n\nSilicon Valley calls its version the PayPal Mafia. India built its own, quieter, less mythologised, just as real. Call it the Flipkart Mafia.\n\nIn 2015, I was right inside it. I joined Flipkart's Supply chain design and new initiatives team, the exact window when the company's former COO says it was deliberately hiring for one trait: audacity. Not credentials or titles.\n\nThat trait didn't stay inside Flipkart's walls. It walked out, repeatedly, and built a second ecosystem. Flipsters have started over 200 companies, raised more than $10 billion.\n\nBecause here's what nobody tells you about that culture: it doesn't produce people who chase incremental problems. It produces people allergic to them.\n\nI left Flipkart's supply chain function and spent the next eight years in India's apparel manufacturing sector, arguably the most fragmented, least-digitized part of the entire economy.\n\nHere, The pitch is not the win. The delivery is the win. I learned that standing in a warehouse at 11 PM, rupee by rupee, watching an order either ship on time or blow a client relationship built over years.\n\nFlipkart taught me to build systems where none existed.\n\nLal10 is that same instinct, pointed at a $47 billion problem nobody wanted to touch: India's apparel manufacturing supply chain, still running on phone calls, WhatsApp, and trust built over decades, not data.\n\nSame audacity put in a Different warehouse."
+  }
+];
 
-var POSTS = [{
-  id:1,
-  author:"Sanchit Govil",
-  role:"Co-Founder, Lal10 \u00b7 Operator at the intersection of fashion, supply chain and capital \u00b7 Forbes 30U30",
-  when:"4 days ago",
-  shareUrn:"urn:li:share:7483757000162652160",
-  activityUrn:"urn:li:activity:7483757003551432704",
-  embedHeight:1403,
-  relevance:9,
-  reason:"An operating story about digitising a fragmented supply chain, and why delivery beats the pitch. Close to frontline execution and adoption work.",
-  draft:"The 11 PM warehouse line is where delivery beats pitch, we saw that in telecom distribution too, where trust in data is hard to establish",
-  text:"PhonePe. Groww. Myntra. Curefit. Meesho.\nOver 200 startups. $25 billion in combined valuation. Six unicorns. Every founder once sat in the same building.\n\nSilicon Valley calls its version the PayPal Mafia. India built its own - quieter, less mythologised, just as real. Call it the Flipkart Mafia.\n\nIn 2015, I was right inside it. I joined Flipkart's Supply chain design and new initiatives team - the exact window when the company's former COO says it was deliberately hiring for one trait: audacity. Not credentials or titles.\n\nThat trait didn't stay inside Flipkart's walls. It walked out, repeatedly, and built a second ecosystem. Flipsters have started over 200 companies, raised more than $10 billion.\n\nBecause here's what nobody tells you about that culture: it doesn't produce people who chase incremental problems. It produces people allergic to them.\n\nI left Flipkart's supply chain function and spent the next eight years in India's apparel manufacturing sector - arguably the most fragmented, least-digitized part of the entire economy.\n\nHere, The pitch is not the win. The delivery is the win. I learned that standing in a warehouse at 11 PM, rupee by rupee, watching an order either ship on time or blow a client relationship built over years.\n\nFlipkart taught me to build systems where none existed.\n\nLal10 is that same instinct, pointed at a $47 billion problem nobody wanted to touch: India's apparel manufacturing supply chain, still running on phone calls, WhatsApp, and trust built over decades - not data.\n\nSame audacity put in a Different warehouse."
-}];
+var FILTERED = [
+  {
+    id: 2,
+    author: "Rishabh Kumar",
+    role: "From 0 to 1 to 100 with AI",
+    when: "13 hours ago",
+    shareUrn: "urn:li:share:7484991797128085504",
+    activityUrn: "urn:li:activity:7485177994400006144",
+    embedHeight: 626,
+    reason: "One line caption on an image post. Nothing in the text to respond to, and the pipeline cannot read what is in the image.",
+    text: "Laptops have a new meaning now"
+  }
+];
 
-var FILTERED = [{
-  id:2,
-  author:"Rishabh Kumar",
-  when:"13 hours ago",
-  shareUrn:"urn:li:share:7484991797128085504",
-  activityUrn:"urn:li:activity:7485177994400006144",
-  embedHeight:626,
-  reason:"One line caption on an image post. Nothing in the text to respond to, and the pipeline can't read what's in the image.",
-  text:"Laptops have a new meaning now"
-}];
+var queue = POSTS.slice();
+var idx = 0;
+var decisions = [];
+var flashTimer;
 
-var queue = POSTS.slice(), i = 0, decisions = [];
-function $(s){ return document.querySelector(s); }
-var stage=$('#stage'), rail=$('#rail'), bar=$('#bar'), flash=$('#flash');
+function el(id){ return document.getElementById(id); }
 
-function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-function words(s){ return s.trim() ? s.trim().split(/\s+/).length : 0; }
-function initials(n){ return n.split(/\s+/).slice(0,2).map(function(x){return x[0];}).join('').toUpperCase(); }
+function esc(s){
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
 
-function say(m){
-  flash.textContent = m;
-  flash.classList.add('show');
-  clearTimeout(flash._t);
-  flash._t = setTimeout(function(){ flash.classList.remove('show'); }, 2100);
+function countWords(s){
+  var v = s.trim();
+  return v ? v.split(/\s+/).length : 0;
+}
+
+function initials(n){
+  var parts = n.split(/\s+/);
+  var out = '';
+  for(var i = 0; i < parts.length && i < 2; i++){ out += parts[i].charAt(0); }
+  return out.toUpperCase();
+}
+
+function say(msg){
+  var f = el('flash');
+  f.textContent = msg;
+  f.className = 'flash show';
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(function(){ f.className = 'flash'; }, 2200);
+}
+
+function drawRail(){
+  var out = '';
+  for(var i = 0; i < queue.length; i++){
+    var c = i < idx ? 'done' : (i === idx ? 'now' : '');
+    out += '<i class="' + c + '"></i>';
+  }
+  el('rail').innerHTML = out;
+}
+
+function finish(){
+  el('bar').style.display = 'none';
+  el('rail').innerHTML = '';
+  el('stage').innerHTML = '';
+  el('pcount').textContent = '0';
+  var ok = 0;
+  for(var i = 0; i < decisions.length; i++){
+    if(decisions[i].action === 'approved'){ ok++; }
+  }
+  el('finmsg').textContent = ok + ' approved, ' + (decisions.length - ok) +
+    ' held back. Next batch lands after the morning run.';
+  el('fin').className = 'fin on';
+  window.scrollTo(0, 0);
 }
 
 function render(){
-  $('#pcount').textContent = Math.max(0, queue.length - i);
-  rail.innerHTML = queue.map(function(_, n){
-    return '<i class="' + (n<i?'done':n===i?'now':'') + '"></i>';
-  }).join('');
+  el('pcount').textContent = Math.max(0, queue.length - idx);
+  drawRail();
 
-  if(i >= queue.length){
-    bar.hidden = true; rail.innerHTML = '';
-    var ok = decisions.filter(function(d){ return d.action==='approved'; }).length;
-    stage.innerHTML = '<div class="fin"><div class="tick">&#10003;</div>' +
-      '<h2>Queue cleared</h2><p>' + ok + ' approved, ' + (decisions.length-ok) +
-      ' held back. Next batch lands after the morning run.</p></div>';
+  if(idx >= queue.length){ finish(); return; }
+
+  el('fin').className = 'fin';
+  el('bar').style.display = '';
+
+  var p = queue[idx];
+  var dots = '';
+  for(var i = 0; i < 10; i++){
+    dots += '<i class="' + (i < p.relevance ? 'on' : '') + '"></i>';
+  }
+
+  var html =
+    '<div class="who">' +
+      '<div class="pic">' + esc(initials(p.author)) + '</div>' +
+      '<div class="whotx">' +
+        '<p class="name">' + esc(p.author) + '</p>' +
+        '<p class="role">' + esc(p.role) + '</p>' +
+        '<div class="meta">' +
+          '<span class="when">' + esc(p.when) + '</span>' +
+          '<span class="rel"><span class="dots">' + dots + '</span><b>' +
+            p.relevance + '</b> fit</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="grid">' +
+      '<div>' +
+        '<div class="panel">' +
+          '<div class="ph"><span>As it appears on LinkedIn</span></div>' +
+          '<div class="framewrap">' +
+            '<iframe class="frame" title="Post by ' + esc(p.author) + '" ' +
+              'style="height:' + p.embedHeight + 'px" ' +
+              'src="https://www.linkedin.com/embed/feed/update/' + p.shareUrn + '"></iframe>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="right">' +
+        '<div class="panel">' +
+          '<div class="ph"><span>Why this one</span></div>' +
+          '<div class="pb"><p class="why">' + esc(p.reason) + '</p></div>' +
+        '</div>' +
+
+        '<div class="panel">' +
+          '<div class="ph"><span>Your comment</span><span class="cnt" id="cnt">&nbsp;</span></div>' +
+          '<div class="pb">' +
+            '<textarea id="ta" aria-label="Your comment">' + esc(p.draft) + '</textarea>' +
+          '</div>' +
+          '<div class="urn">' + esc(p.activityUrn) + '</div>' +
+        '</div>' +
+
+        '<div class="panel">' +
+          '<button class="toggle" id="tg">' +
+            '<span id="tgl">Read the full post</span><b id="tgi">+</b>' +
+          '</button>' +
+          '<div class="post" id="pt">' + esc(p.text) + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  el('stage').innerHTML = html;
+
+  var ta = el('ta');
+  var cnt = el('cnt');
+  function upd(){
+    var n = countWords(ta.value);
+    cnt.textContent = n + ' / 40';
+    cnt.className = n > 40 ? 'cnt over' : 'cnt';
+  }
+  ta.addEventListener('input', upd);
+  upd();
+
+  el('tg').addEventListener('click', function(){
+    var pt = el('pt');
+    var open = pt.className.indexOf('open') === -1;
+    pt.className = open ? 'post open' : 'post';
+    el('tgl').textContent = open ? 'Hide the post' : 'Read the full post';
+    el('tgi').textContent = open ? '\u2212' : '+';
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function act(a){
+  if(idx >= queue.length){ return; }
+  var p = queue[idx];
+
+  if(a === 'later'){
+    if(queue.length - idx < 2){
+      say('Nothing else waiting');
+      return;
+    }
+    var moved = queue.splice(idx, 1)[0];
+    queue.push(moved);
+    say('Moved to the back of the queue');
+    render();
     return;
   }
 
-  bar.hidden = false;
-  var p = queue[i], dots = '';
-  for(var n=0; n<10; n++){ dots += '<i class="' + (n<p.relevance?'on':'') + '"></i>'; }
-
-  stage.innerHTML =
-    '<div class="who"><div class="pic">' + esc(initials(p.author)) + '</div>' +
-      '<div class="whotx"><p class="name">' + esc(p.author) + '</p>' +
-      '<p class="role">' + esc(p.role) + '</p><div class="meta">' +
-      '<span class="when">' + esc(p.when) + '</span>' +
-      '<span class="rel"><span class="dots">' + dots + '</span><b>' +
-      p.relevance + '</b> fit</span></div></div></div>' +
-
-    '<div class="grid"><div class="panel">' +
-      '<div class="ph"><span>As it appears on LinkedIn</span></div>' +
-      '<div class="framewrap"><iframe class="frame" title="Post by ' + esc(p.author) +
-      '" style="height:' + p.embedHeight + 'px" src="https://www.linkedin.com/embed/feed/update/' +
-      p.shareUrn + '"></iframe></div></div>' +
-
-    '<div class="right"><div class="panel">' +
-      '<div class="ph"><span>Why this one</span></div>' +
-      '<div class="pb"><p class="why">' + esc(p.reason) + '</p></div></div>' +
-
-    '<div class="panel" style="margin-top:16px">' +
-      '<div class="ph"><span>Your comment</span><span class="cnt" id="cnt"></span></div>' +
-      '<div class="pb"><textarea id="ta" aria-label="Your comment" ' +
-      'placeholder="Write something worth reading.">' + esc(p.draft) + '</textarea></div>' +
-      '<div class="urn">' + esc(p.activityUrn) + '</div></div>' +
-
-    '<div class="panel" style="margin-top:16px">' +
-      '<button class="toggle" id="tg"><span>Read the full post</span><b>+</b></button>' +
-      '<div class="post" id="pt" style="padding:0 16px">' +
-      '<div style="padding-bottom:16px">' + esc(p.text) + '</div></div></div>' +
-    '</div></div>';
-
-  var ta=$('#ta'), cnt=$('#cnt');
-  function upd(){
-    var w = words(ta.value);
-    cnt.textContent = w + ' / 40';
-    cnt.className = 'cnt' + (w>40 ? ' over' : '');
-  }
-  ta.addEventListener('input', upd); upd();
-
-  var tg=$('#tg'), pt=$('#pt');
-  tg.addEventListener('click', function(){
-    var open = pt.classList.toggle('open');
-    tg.classList.toggle('open', open);
-    tg.querySelector('span').textContent = open ? 'Hide the post' : 'Read the full post';
+  var ta = el('ta');
+  decisions.push({
+    urn: p.activityUrn,
+    action: a,
+    comment: ta ? ta.value : ''
   });
 
-  window.scrollTo({top:0, behavior:'smooth'});
+  say(a === 'approved' ? 'Approved. Posting shortly.' :
+      a === 'rewrite'  ? 'Sent back for a fresh draft.' :
+                         'Left alone. Nothing posted.');
+
+  idx++;
+  render();
 }
 
-bar.addEventListener('click', function(e){
-  var b = e.target.closest('button[data-a]');
-  if(!b) return;
-  var a = b.dataset.a, p = queue[i], ta = $('#ta');
+function drawDrawer(){
+  var d = el('drawer');
+  if(!FILTERED.length){ d.innerHTML = ''; return; }
 
-  if(a === 'later'){
-    queue.push(queue.splice(i,1)[0]);
-    say('Moved to the back of the queue');
-    render(); return;
+  var rows = '';
+  for(var i = 0; i < FILTERED.length; i++){
+    var f = FILTERED[i];
+    rows +=
+      '<div class="drow">' +
+        '<p class="dn">' + esc(f.author) +
+          ' <span style="color:#63636F;font-size:12px;font-weight:400">' +
+          esc(f.when) + '</span></p>' +
+        '<p class="dr">' + esc(f.reason) + '</p>' +
+        '<button class="undo" data-id="' + f.id + '">Put it back in the queue</button>' +
+      '</div>';
   }
 
-  decisions.push({urn:p.activityUrn, action:a, comment: ta ? ta.value : ''});
-  say(a==='approved' ? 'Approved. Posting shortly.'
-    : a==='rewrite'  ? 'Sent back for a fresh draft.'
-    : 'Left alone. Nothing posted.');
+  d.innerHTML =
+    '<button class="dtog" id="dt">' +
+      '<span>Filtered out before review</span><b>' + FILTERED.length + '</b>' +
+    '</button>' +
+    '<div class="dlist" id="dl">' + rows + '</div>';
 
-  /* fetch(SEND,{method:'POST',body:JSON.stringify(decisions[decisions.length-1])}); */
+  el('dt').addEventListener('click', function(){
+    var dl = el('dl');
+    dl.className = dl.className.indexOf('open') === -1 ? 'dlist open' : 'dlist';
+  });
 
-  i++; render();
-});
+  var undos = d.getElementsByClassName('undo');
+  for(var j = 0; j < undos.length; j++){
+    undos[j].addEventListener('click', function(){
+      var id = this.getAttribute('data-id');
+      var f = null;
+      for(var k = 0; k < FILTERED.length; k++){
+        if(String(FILTERED[k].id) === String(id)){ f = FILTERED[k]; break; }
+      }
+      if(!f){ return; }
+      queue.push({
+        id: f.id,
+        author: f.author,
+        role: f.role,
+        when: f.when,
+        shareUrn: f.shareUrn,
+        activityUrn: f.activityUrn,
+        embedHeight: f.embedHeight,
+        relevance: 1,
+        reason: 'You pulled this back after the filter dropped it. Original call: ' + f.reason,
+        draft: '',
+        text: f.text
+      });
+      FILTERED.splice(FILTERED.indexOf(f), 1);
+      say('Added to the queue');
+      drawDrawer();
+      render();
+    });
+  }
+}
 
-function drawDrawer(){
-  var d = $('#drawer');
-  if(!FILTERED.length){ d.innerHTML=''; return; }
-  d.innerHTML = '<button class="dtog" id="dt"><span>Filtered out before review</span><b>' +
-    FILTERED.length + '</b></button><div class="dlist" id="dl">' +
-    FILTERED.map(function(f){
-      return '<div class="drow"><p class="dn">' + esc(f.author) +
-        ' <span style="color:var(--tx3);font-size:12px;font-weight:400">' +
-        esc(f.when)
+var barButtons = el('bar').getElementsByTagName('button');
+for(var b = 0; b < barButtons.length; b++){
+  barButtons[b].addEventListener('click', function(){
+    act(this.getAttribute('data-a'));
+  });
+}
+
+drawDrawer();
+render();
+</script>
+</body>
+</html>
