@@ -24,21 +24,27 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
   padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 
 .top{position:sticky;top:0;z-index:40;display:flex;align-items:center;
-  justify-content:space-between;gap:12px;padding:9px 16px;
+  justify-content:space-between;gap:10px;padding:9px 14px;
   background:rgba(10,10,13,.85);backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:9px}
+.brand{display:flex;align-items:center;gap:8px;min-width:0}
 .mark{width:22px;height:22px;border-radius:7px;flex:none;
   background:linear-gradient(140deg,#D9B36C,#8C6B32);display:grid;
   place-items:center;font-family:Sora,sans-serif;font-size:11px;
   font-weight:600;color:#1A1408}
-.brand b{font-family:Sora,sans-serif;font-size:12.5px;font-weight:500;
+.brand b{font-family:Sora,sans-serif;font-size:12px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase}
-.pending{display:flex;align-items:baseline;gap:6px;padding:5px 11px;
-  border-radius:100px;background:var(--goldbg);border:1px solid #4E3F24}
-.pending b{font-family:Sora,sans-serif;font-size:14px;font-weight:600;
-  color:var(--gold);line-height:1}
-.pending span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#A98A50}
+.pills{display:flex;gap:7px;flex:none}
+.pill{display:flex;align-items:baseline;gap:5px;padding:5px 10px;
+  border-radius:100px;border:1px solid transparent;background:none;
+  font-family:inherit;cursor:default}
+.pill b{font-family:Sora,sans-serif;font-size:13.5px;font-weight:600;line-height:1}
+.pill span{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase}
+.p-gold{background:var(--goldbg);border-color:#4E3F24}
+.p-gold b{color:var(--gold)} .p-gold span{color:#A98A50}
+.p-rose{background:var(--rosebg);border-color:#4A2020;cursor:pointer}
+.p-rose b{color:var(--rose)} .p-rose span{color:#B26565}
+.p-rose:active{transform:scale(.96)}
 
 .rail{display:flex;gap:5px;padding:13px 16px 0;max-width:1120px;margin:0 auto}
 .rail i{flex:1;height:3px;border-radius:2px;background:var(--line2)}
@@ -56,30 +62,42 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
   letter-spacing:-.01em;margin:0;line-height:1.3}
 .role{font-size:12.5px;color:var(--tx2);margin:2px 0 0;overflow:hidden;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.meta{display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
+.meta{display:flex;align-items:center;gap:9px;margin-top:8px;flex-wrap:wrap}
 .when{font-size:11.5px;color:var(--tx3)}
-.rel{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;
-  border-radius:100px;font-size:11px;background:var(--card2);
-  border:1px solid var(--line2);color:var(--tx2)}
-.rel b{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)}
-.dots{display:flex;gap:1.5px}
-.dots i{width:3px;height:3px;border-radius:50%;background:var(--line2)}
-.dots i.on{background:var(--gold)}
+
+.fit{display:inline-flex;align-items:center;gap:7px;padding:3px 9px 3px 8px;
+  border-radius:100px;background:var(--card2);border:1px solid var(--line2)}
+.seg{display:flex;gap:2px}
+.seg i{width:6px;height:11px;border-radius:2px;background:#2E2E3A;
+  border:1px solid #3B3B49;display:block}
+.seg i.on{border-color:transparent}
+.fitn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:-.02em}
+.fitn small{color:var(--tx3);font-size:10px}
 
 .grid{display:grid;grid-template-columns:1fr;gap:16px}
 @media(min-width:900px){
   .grid{grid-template-columns:minmax(0,504px) minmax(0,1fr);gap:22px;align-items:start}
-  .right{position:sticky;top:68px}
+  .right{position:sticky;top:66px}
 }
 
 .panel{background:var(--card);border:1px solid var(--line);
   border-radius:18px;overflow:hidden;margin-bottom:16px}
 .panel:last-child{margin-bottom:0}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:13px 16px;border-bottom:1px solid var(--line)}
-.ph span{font-family:Sora,sans-serif;font-size:10.5px;font-weight:500;
+  padding:11px 14px;border-bottom:1px solid var(--line)}
+.ph > span{font-family:Sora,sans-serif;font-size:10.5px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
 .pb{padding:16px}
+
+.size{display:flex;align-items:center;gap:6px}
+.size button{width:26px;height:26px;border-radius:8px;cursor:pointer;
+  background:var(--card2);border:1px solid var(--line2);color:var(--tx2);
+  font-family:Sora,sans-serif;font-size:14px;line-height:1;padding:0;
+  display:grid;place-items:center}
+.size button:hover{border-color:var(--gold);color:var(--gold)}
+.size em{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);
+  font-style:normal;min-width:34px;text-align:center}
+
 .framewrap{padding:10px;background:var(--card2)}
 .frame{width:100%;border:0;display:block;background:var(--card2);border-radius:10px}
 .why{font-size:14.5px;margin:0}
@@ -134,29 +152,34 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
   background:var(--mintbg);border:1px solid #235C40;color:var(--mint);
   display:grid;place-items:center;font-size:26px}
 
-.drawer{max-width:1120px;margin:8px auto 0;padding:0 16px}
-.dtog{width:100%;background:var(--card);border:1px solid var(--line);
-  border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;
-  justify-content:space-between;align-items:center;font-family:Sora,sans-serif;
-  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx2)}
-.dtog b{color:var(--gold);font-family:'JetBrains Mono',monospace;letter-spacing:0}
-.dlist{display:none}
-.dlist.open{display:block}
-.drow{background:var(--card);border:1px solid var(--line);
-  border-left:2px solid var(--rose);border-radius:12px;padding:14px 16px;margin-top:8px}
-.drow p{margin:0}
-.dn{font-family:Sora,sans-serif;font-size:15px;font-weight:500}
-.dr{font-size:13px;color:var(--tx2);margin-top:4px}
-.undo{margin-top:11px;background:none;border:1px solid var(--line2);
+.back{background:none;border:1px solid var(--line2);color:var(--tx2);
+  border-radius:10px;padding:8px 14px;cursor:pointer;font-family:Sora,sans-serif;
+  font-size:12px;margin-bottom:16px}
+.back:hover{border-color:var(--gold);color:var(--gold)}
+.rtitle{font-family:Sora,sans-serif;font-size:20px;font-weight:600;
+  margin:0 0 4px;letter-spacing:-.01em}
+.rsub{color:var(--tx2);font-size:13.5px;margin:0 0 20px}
+.rcard{background:var(--card);border:1px solid var(--line);
+  border-left:2px solid var(--rose);border-radius:14px;padding:16px;margin-bottom:12px}
+.rcard .rn{font-family:Sora,sans-serif;font-size:16px;font-weight:500;margin:0}
+.rcard .rw{font-size:11.5px;color:var(--tx3);margin:2px 0 0}
+.rcard .rr{font-size:13.5px;color:var(--tx2);margin:10px 0 0}
+.rcard .rq{font-size:13.5px;color:var(--tx2);margin:10px 0 0;
+  padding:10px 12px;background:var(--card2);border-radius:10px;white-space:pre-wrap}
+.undo{margin-top:12px;background:none;border:1px solid var(--line2);
   color:var(--tx);border-radius:10px;padding:8px 13px;cursor:pointer;
   font-family:Sora,sans-serif;font-size:12px}
+.undo:hover{border-color:var(--gold);color:var(--gold)}
 </style>
 </head>
 <body>
 
 <div class="top">
   <div class="brand"><div class="mark">S</div><b>Review</b></div>
-  <div class="pending"><b id="pcount">0</b><span>to review</span></div>
+  <div class="pills">
+    <div class="pill p-gold"><b id="pcount">0</b><span>to review</span></div>
+    <button class="pill p-rose" id="rejbtn"><b id="rcount">0</b><span>rejected</span></button>
+  </div>
 </div>
 
 <div class="rail" id="rail"></div>
@@ -167,8 +190,6 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
   <h2>Queue cleared</h2>
   <p id="finmsg">Next batch lands after the morning run.</p>
 </div>
-
-<div class="drawer" id="drawer"></div>
 
 <div class="bar" id="bar">
   <div class="barin">
@@ -190,7 +211,7 @@ var POSTS = [
     when: "4 days ago",
     shareUrn: "urn:li:share:7483757000162652160",
     activityUrn: "urn:li:activity:7483757003551432704",
-    embedHeight: 1403,
+    embedHeight: 1100,
     relevance: 9,
     reason: "An operating story about digitising a fragmented supply chain, and why delivery beats the pitch. Close to frontline execution and adoption work.",
     draft: "The 11 PM warehouse line is where delivery beats pitch, we saw that in telecom distribution too, where trust in data is hard to establish",
@@ -198,7 +219,7 @@ var POSTS = [
   }
 ];
 
-var FILTERED = [
+var REJECTED = [
   {
     id: 2,
     author: "Rishabh Kumar",
@@ -206,15 +227,18 @@ var FILTERED = [
     when: "13 hours ago",
     shareUrn: "urn:li:share:7484991797128085504",
     activityUrn: "urn:li:activity:7485177994400006144",
-    embedHeight: 626,
+    embedHeight: 640,
+    by: "filter",
     reason: "One line caption on an image post. Nothing in the text to respond to, and the pipeline cannot read what is in the image.",
+    comment: "",
     text: "Laptops have a new meaning now"
   }
 ];
 
 var queue = POSTS.slice();
 var idx = 0;
-var decisions = [];
+var approvedCount = 0;
+var view = 'queue';
 var flashTimer;
 
 function el(id){ return document.getElementById(id); }
@@ -237,6 +261,12 @@ function initials(n){
   return out.toUpperCase();
 }
 
+function fitColour(n){
+  if(n >= 8){ return '#7BE0A8'; }
+  if(n >= 5){ return '#F0B44A'; }
+  return '#FF8080';
+}
+
 function say(msg){
   var f = el('flash');
   f.textContent = msg;
@@ -245,7 +275,13 @@ function say(msg){
   flashTimer = setTimeout(function(){ f.className = 'flash'; }, 2200);
 }
 
+function counts(){
+  el('pcount').textContent = Math.max(0, queue.length - idx);
+  el('rcount').textContent = REJECTED.length;
+}
+
 function drawRail(){
+  if(view !== 'queue'){ el('rail').innerHTML = ''; return; }
   var out = '';
   for(var i = 0; i < queue.length; i++){
     var c = i < idx ? 'done' : (i === idx ? 'now' : '');
@@ -258,19 +294,14 @@ function finish(){
   el('bar').style.display = 'none';
   el('rail').innerHTML = '';
   el('stage').innerHTML = '';
-  el('pcount').textContent = '0';
-  var ok = 0;
-  for(var i = 0; i < decisions.length; i++){
-    if(decisions[i].action === 'approved'){ ok++; }
-  }
-  el('finmsg').textContent = ok + ' approved, ' + (decisions.length - ok) +
-    ' held back. Next batch lands after the morning run.';
+  el('finmsg').textContent = approvedCount + ' approved. ' +
+    REJECTED.length + ' sitting in rejected. Next batch lands after the morning run.';
   el('fin').className = 'fin on';
   window.scrollTo(0, 0);
 }
 
-function render(){
-  el('pcount').textContent = Math.max(0, queue.length - idx);
+function renderQueue(){
+  counts();
   drawRail();
 
   if(idx >= queue.length){ finish(); return; }
@@ -279,9 +310,12 @@ function render(){
   el('bar').style.display = '';
 
   var p = queue[idx];
-  var dots = '';
+  var col = fitColour(p.relevance);
+  var seg = '';
   for(var i = 0; i < 10; i++){
-    dots += '<i class="' + (i < p.relevance ? 'on' : '') + '"></i>';
+    seg += i < p.relevance
+      ? '<i class="on" style="background:' + col + '"></i>'
+      : '<i></i>';
   }
 
   var html =
@@ -292,8 +326,9 @@ function render(){
         '<p class="role">' + esc(p.role) + '</p>' +
         '<div class="meta">' +
           '<span class="when">' + esc(p.when) + '</span>' +
-          '<span class="rel"><span class="dots">' + dots + '</span><b>' +
-            p.relevance + '</b> fit</span>' +
+          '<span class="fit"><span class="seg">' + seg + '</span>' +
+            '<span class="fitn" style="color:' + col + '">' + p.relevance +
+            '<small>/10 fit</small></span></span>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -301,9 +336,15 @@ function render(){
     '<div class="grid">' +
       '<div>' +
         '<div class="panel">' +
-          '<div class="ph"><span>As it appears on LinkedIn</span></div>' +
+          '<div class="ph"><span>As it appears on LinkedIn</span>' +
+            '<span class="size">' +
+              '<button id="shrink" aria-label="Make shorter">&#8722;</button>' +
+              '<em id="hval">' + p.embedHeight + '</em>' +
+              '<button id="grow" aria-label="Make taller">+</button>' +
+            '</span>' +
+          '</div>' +
           '<div class="framewrap">' +
-            '<iframe class="frame" title="Post by ' + esc(p.author) + '" ' +
+            '<iframe class="frame" id="fr" title="Post by ' + esc(p.author) + '" ' +
               'style="height:' + p.embedHeight + 'px" ' +
               'src="https://www.linkedin.com/embed/feed/update/' + p.shareUrn + '"></iframe>' +
           '</div>' +
@@ -345,6 +386,14 @@ function render(){
   ta.addEventListener('input', upd);
   upd();
 
+  function resize(delta){
+    p.embedHeight = Math.max(300, p.embedHeight + delta);
+    el('fr').style.height = p.embedHeight + 'px';
+    el('hval').textContent = p.embedHeight;
+  }
+  el('grow').addEventListener('click', function(){ resize(100); });
+  el('shrink').addEventListener('click', function(){ resize(-100); });
+
   el('tg').addEventListener('click', function(){
     var pt = el('pt');
     var open = pt.className.indexOf('open') === -1;
@@ -356,94 +405,107 @@ function render(){
   window.scrollTo(0, 0);
 }
 
-function act(a){
-  if(idx >= queue.length){ return; }
-  var p = queue[idx];
-
-  if(a === 'later'){
-    if(queue.length - idx < 2){
-      say('Nothing else waiting');
-      return;
-    }
-    var moved = queue.splice(idx, 1)[0];
-    queue.push(moved);
-    say('Moved to the back of the queue');
-    render();
-    return;
-  }
-
-  var ta = el('ta');
-  decisions.push({
-    urn: p.activityUrn,
-    action: a,
-    comment: ta ? ta.value : ''
-  });
-
-  say(a === 'approved' ? 'Approved. Posting shortly.' :
-      a === 'rewrite'  ? 'Sent back for a fresh draft.' :
-                         'Left alone. Nothing posted.');
-
-  idx++;
-  render();
-}
-
-function drawDrawer(){
-  var d = el('drawer');
-  if(!FILTERED.length){ d.innerHTML = ''; return; }
+function renderRejected(){
+  counts();
+  drawRail();
+  el('fin').className = 'fin';
+  el('bar').style.display = 'none';
 
   var rows = '';
-  for(var i = 0; i < FILTERED.length; i++){
-    var f = FILTERED[i];
+  for(var i = 0; i < REJECTED.length; i++){
+    var r = REJECTED[i];
+    var why = r.by === 'filter'
+      ? 'Dropped by the filter before it reached you.'
+      : 'You decided not to comment on this one.';
     rows +=
-      '<div class="drow">' +
-        '<p class="dn">' + esc(f.author) +
-          ' <span style="color:#63636F;font-size:12px;font-weight:400">' +
-          esc(f.when) + '</span></p>' +
-        '<p class="dr">' + esc(f.reason) + '</p>' +
-        '<button class="undo" data-id="' + f.id + '">Put it back in the queue</button>' +
+      '<div class="rcard">' +
+        '<p class="rn">' + esc(r.author) + '</p>' +
+        '<p class="rw">' + esc(r.when) + ' \u00b7 ' + esc(why) + '</p>' +
+        '<p class="rr">' + esc(r.reason) + '</p>' +
+        (r.comment ? '<p class="rq">' + esc(r.comment) + '</p>' : '') +
+        '<button class="undo" data-id="' + r.id + '">Put it back in the queue</button>' +
       '</div>';
   }
 
-  d.innerHTML =
-    '<button class="dtog" id="dt">' +
-      '<span>Filtered out before review</span><b>' + FILTERED.length + '</b>' +
-    '</button>' +
-    '<div class="dlist" id="dl">' + rows + '</div>';
+  if(!rows){ rows = '<p style="color:var(--tx2)">Nothing rejected yet.</p>'; }
 
-  el('dt').addEventListener('click', function(){
-    var dl = el('dl');
-    dl.className = dl.className.indexOf('open') === -1 ? 'dlist open' : 'dlist';
+  el('stage').innerHTML =
+    '<button class="back" id="bk">&#8592; Back to review</button>' +
+    '<p class="rtitle">Rejected</p>' +
+    '<p class="rsub">Posts the filter dropped, plus the ones you passed on. ' +
+      'Pull any of them back if the call was wrong.</p>' + rows;
+
+  el('bk').addEventListener('click', function(){
+    view = 'queue';
+    renderQueue();
   });
 
-  var undos = d.getElementsByClassName('undo');
+  var undos = el('stage').getElementsByClassName('undo');
   for(var j = 0; j < undos.length; j++){
     undos[j].addEventListener('click', function(){
       var id = this.getAttribute('data-id');
       var f = null;
-      for(var k = 0; k < FILTERED.length; k++){
-        if(String(FILTERED[k].id) === String(id)){ f = FILTERED[k]; break; }
+      for(var k = 0; k < REJECTED.length; k++){
+        if(String(REJECTED[k].id) === String(id)){ f = REJECTED[k]; break; }
       }
       if(!f){ return; }
       queue.push({
-        id: f.id,
-        author: f.author,
-        role: f.role,
-        when: f.when,
-        shareUrn: f.shareUrn,
-        activityUrn: f.activityUrn,
-        embedHeight: f.embedHeight,
-        relevance: 1,
-        reason: 'You pulled this back after the filter dropped it. Original call: ' + f.reason,
-        draft: '',
-        text: f.text
+        id: f.id, author: f.author, role: f.role, when: f.when,
+        shareUrn: f.shareUrn, activityUrn: f.activityUrn,
+        embedHeight: f.embedHeight, relevance: 4,
+        reason: 'You pulled this back. Original call: ' + f.reason,
+        draft: f.comment || '', text: f.text
       });
-      FILTERED.splice(FILTERED.indexOf(f), 1);
-      say('Added to the queue');
-      drawDrawer();
-      render();
+      REJECTED.splice(REJECTED.indexOf(f), 1);
+      say('Back in the queue');
+      renderRejected();
     });
   }
+
+  window.scrollTo(0, 0);
 }
+
+function render(){
+  if(view === 'rejected'){ renderRejected(); } else { renderQueue(); }
+}
+
+function act(a){
+  if(view !== 'queue' || idx >= queue.length){ return; }
+  var p = queue[idx];
+  var ta = el('ta');
+  var text = ta ? ta.value : '';
+
+  if(a === 'later'){
+    if(queue.length - idx < 2){ say('Nothing else waiting'); return; }
+    queue.push(queue.splice(idx, 1)[0]);
+    say('Moved to the back of the queue');
+    renderQueue();
+    return;
+  }
+
+  if(a === 'approved'){
+    approvedCount++;
+    say('Approved. Posting shortly.');
+  } else if(a === 'rewrite'){
+    say('Sent back for a fresh draft.');
+  } else {
+    REJECTED.push({
+      id: p.id, author: p.author, role: p.role, when: p.when,
+      shareUrn: p.shareUrn, activityUrn: p.activityUrn,
+      embedHeight: p.embedHeight, by: 'you',
+      reason: p.reason, comment: text, text: p.text
+    });
+    say('Moved to rejected.');
+  }
+
+  idx++;
+  renderQueue();
+}
+
+el('rejbtn').addEventListener('click', function(){
+  view = view === 'rejected' ? 'queue' : 'rejected';
+  render();
+});
 
 var barButtons = el('bar').getElementsByTagName('button');
 for(var b = 0; b < barButtons.length; b++){
@@ -452,7 +514,6 @@ for(var b = 0; b < barButtons.length; b++){
   });
 }
 
-drawDrawer();
 render();
 </script>
 </body>
