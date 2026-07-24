@@ -24,7 +24,7 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
   padding-bottom:calc(90px + env(safe-area-inset-bottom))}
 
 .top{position:sticky;top:0;z-index:40;display:flex;align-items:center;
-  justify-content:space-between;gap:10px;padding:9px 14px;
+  justify-content:space-between;gap:8px;padding:9px 12px;
   background:rgba(10,10,13,.85);backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:8px;min-width:0}
@@ -34,17 +34,21 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
   font-weight:600;color:#1A1408}
 .brand b{font-family:Sora,sans-serif;font-size:12px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase}
-.pills{display:flex;gap:7px;align-items:center;flex:none}
-.pill{display:flex;align-items:baseline;gap:5px;padding:5px 10px;
+@media(max-width:430px){.brand b{display:none}}
+.pills{display:flex;gap:6px;align-items:center;flex:none}
+.pill{display:flex;align-items:baseline;gap:5px;padding:5px 9px;
   border-radius:100px;border:1px solid transparent;background:none;
-  font-family:inherit;cursor:default}
-.pill b{font-family:Sora,sans-serif;font-size:13.5px;font-weight:600;line-height:1}
-.pill span{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase}
+  font-family:inherit;cursor:pointer}
+.pill b{font-family:Sora,sans-serif;font-size:13px;font-weight:600;line-height:1}
+.pill span{font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.pill:active{transform:scale(.96)}
 .p-gold{background:var(--goldbg);border-color:#4E3F24}
 .p-gold b{color:var(--gold)} .p-gold span{color:#A98A50}
-.p-rose{background:var(--rosebg);border-color:#4A2020;cursor:pointer}
+.p-rose{background:var(--rosebg);border-color:#4A2020}
 .p-rose b{color:var(--rose)} .p-rose span{color:#B26565}
-.p-rose:active{transform:scale(.96)}
+.p-mint{background:var(--mintbg);border-color:#235C40}
+.p-mint b{color:var(--mint)} .p-mint span{color:#5C9C7B}
+.pill.sel{box-shadow:0 0 0 1px currentColor}
 .sync{width:28px;height:28px;border-radius:9px;cursor:pointer;flex:none;
   background:var(--card2);border:1px solid var(--line2);color:var(--tx2);
   font-size:14px;line-height:1;padding:0;display:grid;place-items:center}
@@ -124,6 +128,16 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .cnt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3)}
 .cnt.over{color:var(--rose)}
 
+.said{font-size:15px;line-height:1.65;margin:0;padding:14px;
+  background:var(--card2);border-radius:14px;border:1px solid var(--line2);
+  white-space:pre-wrap}
+.wasdraft{font-size:13.5px;color:var(--tx2);margin:12px 0 0;padding:12px 14px;
+  background:#101015;border-radius:12px;border:1px dashed var(--line2);
+  white-space:pre-wrap}
+.wasdraft b{display:block;font-family:Sora,sans-serif;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);
+  margin-bottom:6px;font-weight:500}
+
 .post{font-size:14.5px;white-space:pre-wrap;color:var(--tx2);display:none;
   padding:0 16px 16px}
 .post.open{display:block}
@@ -135,6 +149,12 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 
 .urn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);
   word-break:break-all;padding:12px 16px;border-top:1px solid var(--line)}
+
+.golink{display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+  background:var(--mintbg);border:1px solid #235C40;color:var(--mint);
+  border-radius:12px;padding:11px 16px;font-family:Sora,sans-serif;
+  font-size:13px;font-weight:500;margin-top:14px}
+.golink:hover{filter:brightness(1.1)}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:50;
   padding:10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -175,17 +195,40 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .rtitle{font-family:Sora,sans-serif;font-size:20px;font-weight:600;
   margin:0 0 4px;letter-spacing:-.01em}
 .rsub{color:var(--tx2);font-size:13.5px;margin:0 0 20px}
+
 .rcard{background:var(--card);border:1px solid var(--line);
   border-left:2px solid var(--rose);border-radius:14px;padding:16px;margin-bottom:12px}
-.rcard .rn{font-family:Sora,sans-serif;font-size:16px;font-weight:500;margin:0}
-.rcard .rw{font-size:11.5px;color:var(--tx3);margin:2px 0 0}
-.rcard .rr{font-size:13.5px;color:var(--tx2);margin:10px 0 0}
-.rcard .rq{font-size:13.5px;color:var(--tx2);margin:10px 0 0;
-  padding:10px 12px;background:var(--card2);border-radius:10px;white-space:pre-wrap}
+.rcard p{margin:0}
+.rn{font-family:Sora,sans-serif;font-size:16px;font-weight:500}
+.rw{font-size:11.5px;color:var(--tx3);margin-top:2px}
+.rr{font-size:13.5px;color:var(--tx2);margin-top:10px}
+.rq{font-size:13.5px;color:var(--tx2);margin-top:10px;padding:10px 12px;
+  background:var(--card2);border-radius:10px;white-space:pre-wrap}
 .undo{margin-top:12px;background:none;border:1px solid var(--line2);
   color:var(--tx);border-radius:10px;padding:8px 13px;cursor:pointer;
   font-family:Sora,sans-serif;font-size:12px}
 .undo:hover{border-color:var(--gold);color:var(--gold)}
+
+.arow{width:100%;text-align:left;background:var(--card);
+  border:1px solid var(--line);border-left:2px solid var(--mint);
+  border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;
+  display:flex;align-items:flex-start;gap:12px;font-family:inherit;color:inherit}
+.arow:hover{border-color:var(--line2);border-left-color:var(--mint)}
+.arow:active{transform:scale(.995)}
+.apic{width:34px;height:34px;border-radius:11px;flex:none;background:var(--card2);
+  border:1px solid var(--line2);display:grid;place-items:center;
+  font-family:Sora,sans-serif;font-size:12px;font-weight:600;color:var(--mint)}
+.atx{min-width:0;flex:1}
+.ahead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.aname{font-family:Sora,sans-serif;font-size:15px;font-weight:500}
+.achip{font-family:Sora,sans-serif;font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 7px;border-radius:100px}
+.chip-a{background:var(--amberbg);color:var(--amber)}
+.chip-p{background:var(--mintbg);color:var(--mint)}
+.adate{font-size:11px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+.asnip{font-size:13.5px;color:var(--tx2);margin:6px 0 0;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.achev{color:var(--tx3);font-size:16px;flex:none;align-self:center}
 </style>
 </head>
 <body>
@@ -193,9 +236,10 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <div class="top">
   <div class="brand"><div class="mark">S</div><b>Review</b></div>
   <div class="pills">
-    <div class="pill p-gold"><b id="pcount">0</b><span>to review</span></div>
+    <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>review</span></button>
+    <button class="pill p-mint" id="abtn"><b id="acount">0</b><span>approved</span></button>
     <button class="pill p-rose" id="rejbtn"><b id="rcount">0</b><span>rejected</span></button>
-    <button class="sync" id="sync" aria-label="Reload from sheet">&#8635;</button>
+    <button class="sync" id="sync" aria-label="Reload">&#8635;</button>
   </div>
 </div>
 
@@ -218,9 +262,12 @@ var ENDPOINT = 'https://script.google.com/macros/s/AKfycbx6JNaX9xRLzggDHD4tRIB6G
 
 var queue = [];
 var rejected = [];
+var approved = [];
+var historyDays = 10;
 var idx = 0;
 var approvedCount = 0;
 var view = 'queue';
+var detail = null;
 var flashTimer;
 var busy = false;
 
@@ -250,6 +297,16 @@ function fitColour(n){
   return '#FF8080';
 }
 
+function niceDate(iso){
+  if(!iso){ return 'no date'; }
+  var d = new Date(iso);
+  if(isNaN(d.getTime())){ return 'no date'; }
+  var days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if(days <= 0){ return 'today'; }
+  if(days === 1){ return 'yesterday'; }
+  return days + ' days ago';
+}
+
 function say(msg, bad){
   var f = el('flash');
   f.textContent = msg;
@@ -261,6 +318,11 @@ function say(msg, bad){
 function counts(){
   el('pcount').textContent = Math.max(0, queue.length - idx);
   el('rcount').textContent = rejected.length;
+  el('acount').textContent = approved.length;
+
+  el('qbtn').className = 'pill p-gold' + (view === 'queue' ? ' sel' : '');
+  el('abtn').className = 'pill p-mint' + (view === 'approved' ? ' sel' : '');
+  el('rejbtn').className = 'pill p-rose' + (view === 'rejected' ? ' sel' : '');
 }
 
 function drawRail(){
@@ -273,44 +335,42 @@ function drawRail(){
   el('rail').innerHTML = out;
 }
 
-function showState(title, body, showRetry, detail){
+function showState(title, body, showRetry, det){
   el('bar').style.display = 'none';
   el('rail').innerHTML = '';
   el('stage').innerHTML =
     '<div class="state"><h3>' + esc(title) + '</h3><p>' + esc(body) + '</p>' +
-    (detail ? '<code>' + esc(detail) + '</code>' : '') +
+    (det ? '<code>' + esc(det) + '</code>' : '') +
     (showRetry ? '<button class="retry" id="rt">Try again</button>' : '') +
     '</div>';
-  if(showRetry){
-    el('rt').addEventListener('click', load);
-  }
+  if(showRetry){ el('rt').addEventListener('click', load); }
 }
 
 function load(){
   if(ENDPOINT.indexOf('PASTE_YOUR') === 0){
-    showState('Not connected yet',
-      'Open this file and replace ENDPOINT near the top of the script with your Apps Script /exec URL.',
-      false);
+    showState('Not connected', 'Set ENDPOINT near the top of the script.', false);
     return;
   }
 
-  showState('Loading', 'Reading the queue from your sheet.', false);
+  showState('Loading', 'Reading from your sheet.', false);
 
   fetch(ENDPOINT + '?action=list&t=' + Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
-      if(!d.ok){ throw new Error(d.error || 'Backend returned an error'); }
+      if(!d.ok){ throw new Error(d.error || 'Backend error'); }
       queue = d.pending || [];
       rejected = d.rejected || [];
+      approved = d.approved || [];
+      historyDays = d.history_days || 10;
       idx = 0;
       approvedCount = 0;
       view = 'queue';
+      detail = null;
       render();
     })
     .catch(function(err){
       showState('Could not reach the sheet',
-        'The dashboard loaded but the backend did not answer. Check the deployment is set to "Anyone" access.',
-        true, String(err));
+        'Check the deployment access is set to Anyone.', true, String(err));
     });
 }
 
@@ -327,31 +387,7 @@ function send(urn, action, comment){
   });
 }
 
-function finish(){
-  el('bar').style.display = 'none';
-  el('rail').innerHTML = '';
-  el('stage').innerHTML =
-    '<div class="fin"><div class="tick">&#10003;</div><h2>Queue cleared</h2><p>' +
-    approvedCount + ' approved, ' + rejected.length +
-    ' sitting in rejected. Next batch lands after the morning run.</p></div>';
-  window.scrollTo(0, 0);
-}
-
-function renderQueue(){
-  counts();
-  drawRail();
-
-  if(!queue.length){
-    showState('Nothing waiting', 'No pending rows in the sheet right now.', true);
-    counts();
-    return;
-  }
-
-  if(idx >= queue.length){ finish(); return; }
-
-  el('bar').style.display = '';
-
-  var p = queue[idx];
+function whoBlock(p){
   var col = fitColour(p.relevance);
   var seg = '';
   for(var i = 0; i < 10; i++){
@@ -359,60 +395,110 @@ function renderQueue(){
       ? '<i class="on" style="background:' + col + '"></i>'
       : '<i></i>';
   }
-
-  el('stage').innerHTML =
-    '<div class="who">' +
-      '<div class="pic">' + esc(initials(p.author)) + '</div>' +
-      '<div class="whotx">' +
-        '<p class="name">' + esc(p.author) + '</p>' +
-        '<p class="role">' + esc(p.author_headline) + '</p>' +
-        '<div class="meta">' +
-          '<span class="when">' + esc(p.posted_when) + '</span>' +
-          '<span class="fit"><span class="seg">' + seg + '</span>' +
-            '<span class="fitn" style="color:' + col + '">' + p.relevance +
-            '<small>/10 fit</small></span></span>' +
-        '</div>' +
+  return '<div class="who">' +
+    '<div class="pic">' + esc(initials(p.author)) + '</div>' +
+    '<div class="whotx">' +
+      '<p class="name">' + esc(p.author) + '</p>' +
+      '<p class="role">' + esc(p.author_headline) + '</p>' +
+      '<div class="meta">' +
+        '<span class="when">' + esc(p.posted_when) + '</span>' +
+        '<span class="fit"><span class="seg">' + seg + '</span>' +
+          '<span class="fitn" style="color:' + col + '">' + p.relevance +
+          '<small>/10 fit</small></span></span>' +
       '</div>' +
     '</div>' +
+  '</div>';
+}
 
+function embedPanel(p, withSizer){
+  return '<div class="panel">' +
+    '<div class="ph"><span>As it appears on LinkedIn</span>' +
+      (withSizer ? '<span class="size">' +
+        '<button id="shrink" aria-label="Shorter">&#8722;</button>' +
+        '<em id="hval">' + p.embed_height + '</em>' +
+        '<button id="grow" aria-label="Taller">+</button>' +
+      '</span>' : '') +
+    '</div>' +
+    '<div class="framewrap">' +
+      '<iframe class="frame" id="fr" title="Post by ' + esc(p.author) + '" ' +
+        'style="height:' + p.embed_height + 'px" ' +
+        'src="https://www.linkedin.com/embed/feed/update/' + esc(p.post_urn) + '"></iframe>' +
+    '</div>' +
+  '</div>';
+}
+
+function postToggle(p){
+  return '<div class="panel">' +
+    '<button class="toggle" id="tg"><span id="tgl">Read the full post</span><b id="tgi">+</b></button>' +
+    '<div class="post" id="pt">' + esc(p.post_text) + '</div>' +
+  '</div>';
+}
+
+function wireToggle(){
+  var tg = el('tg');
+  if(!tg){ return; }
+  tg.addEventListener('click', function(){
+    var pt = el('pt');
+    var open = pt.className.indexOf('open') === -1;
+    pt.className = open ? 'post open' : 'post';
+    el('tgl').textContent = open ? 'Hide the post' : 'Read the full post';
+    el('tgi').textContent = open ? '\u2212' : '+';
+  });
+}
+
+function wireSizer(p){
+  var g = el('grow');
+  if(!g){ return; }
+  function resize(delta){
+    p.embed_height = Math.max(300, Number(p.embed_height) + delta);
+    el('fr').style.height = p.embed_height + 'px';
+    el('hval').textContent = p.embed_height;
+  }
+  g.addEventListener('click', function(){ resize(100); });
+  el('shrink').addEventListener('click', function(){ resize(-100); });
+}
+
+/* ---------- review ---------- */
+
+function renderQueue(){
+  counts();
+  drawRail();
+
+  if(!queue.length){
+    showState('Nothing waiting', 'No pending rows right now.', true);
+    counts();
+    return;
+  }
+
+  if(idx >= queue.length){
+    el('bar').style.display = 'none';
+    el('rail').innerHTML = '';
+    el('stage').innerHTML =
+      '<div class="fin"><div class="tick">&#10003;</div><h2>Queue cleared</h2><p>' +
+      approvedCount + ' approved this session. Next batch lands after the next run.</p></div>';
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  el('bar').style.display = '';
+  var p = queue[idx];
+
+  el('stage').innerHTML =
+    whoBlock(p) +
     '<div class="grid">' +
-      '<div>' +
-        '<div class="panel">' +
-          '<div class="ph"><span>As it appears on LinkedIn</span>' +
-            '<span class="size">' +
-              '<button id="shrink" aria-label="Shorter">&#8722;</button>' +
-              '<em id="hval">' + p.embed_height + '</em>' +
-              '<button id="grow" aria-label="Taller">+</button>' +
-            '</span>' +
-          '</div>' +
-          '<div class="framewrap">' +
-            '<iframe class="frame" id="fr" title="Post by ' + esc(p.author) + '" ' +
-              'style="height:' + p.embed_height + 'px" ' +
-              'src="https://www.linkedin.com/embed/feed/update/' + esc(p.post_urn) + '"></iframe>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-
+      '<div>' + embedPanel(p, true) + '</div>' +
       '<div class="right">' +
         '<div class="panel">' +
           '<div class="ph"><span>Why this one</span></div>' +
           '<div class="pb"><p class="why">' + esc(p.reason) + '</p></div>' +
         '</div>' +
-
         '<div class="panel">' +
           '<div class="ph"><span>Your comment</span><span class="cnt" id="cnt">&nbsp;</span></div>' +
-          '<div class="pb">' +
-            '<textarea id="ta" aria-label="Your comment">' + esc(p.draft_comment) + '</textarea>' +
-          '</div>' +
+          '<div class="pb"><textarea id="ta" aria-label="Your comment">' +
+            esc(p.draft_comment) + '</textarea></div>' +
           '<div class="urn">' + esc(p.activity_urn) + '</div>' +
         '</div>' +
-
-        '<div class="panel">' +
-          '<button class="toggle" id="tg">' +
-            '<span id="tgl">Read the full post</span><b id="tgi">+</b>' +
-          '</button>' +
-          '<div class="post" id="pt">' + esc(p.post_text) + '</div>' +
-        '</div>' +
+        postToggle(p) +
       '</div>' +
     '</div>';
 
@@ -426,24 +512,103 @@ function renderQueue(){
   ta.addEventListener('input', upd);
   upd();
 
-  function resize(delta){
-    p.embed_height = Math.max(300, Number(p.embed_height) + delta);
-    el('fr').style.height = p.embed_height + 'px';
-    el('hval').textContent = p.embed_height;
-  }
-  el('grow').addEventListener('click', function(){ resize(100); });
-  el('shrink').addEventListener('click', function(){ resize(-100); });
+  wireSizer(p);
+  wireToggle();
+  window.scrollTo(0, 0);
+}
 
-  el('tg').addEventListener('click', function(){
-    var pt = el('pt');
-    var open = pt.className.indexOf('open') === -1;
-    pt.className = open ? 'post open' : 'post';
-    el('tgl').textContent = open ? 'Hide the post' : 'Read the full post';
-    el('tgi').textContent = open ? '\u2212' : '+';
-  });
+/* ---------- approved history ---------- */
+
+function renderApprovedList(){
+  counts();
+  el('rail').innerHTML = '';
+  el('bar').style.display = 'none';
+
+  var rows = '';
+  for(var i = 0; i < approved.length; i++){
+    var a = approved[i];
+    var chip = a.status === 'posted'
+      ? '<span class="achip chip-p">posted</span>'
+      : '<span class="achip chip-a">queued to post</span>';
+    rows +=
+      '<button class="arow" data-i="' + i + '">' +
+        '<span class="apic">' + esc(initials(a.author)) + '</span>' +
+        '<span class="atx">' +
+          '<span class="ahead"><span class="aname">' + esc(a.author) + '</span>' +
+            chip + '<span class="adate">' + esc(niceDate(a.decided_at)) + '</span></span>' +
+          '<span class="asnip">' + esc(a.final_comment || a.draft_comment) + '</span>' +
+        '</span>' +
+        '<span class="achev">&#8250;</span>' +
+      '</button>';
+  }
+
+  if(!rows){
+    rows = '<p style="color:#9A9AA8">Nothing approved in the last ' + historyDays + ' days.</p>';
+  }
+
+  el('stage').innerHTML =
+    '<p class="rtitle">Approved</p>' +
+    '<p class="rsub">Everything you signed off in the last ' + historyDays +
+      ' days. Tap any one to see the post and check the comment went out.</p>' + rows;
+
+  var btns = el('stage').getElementsByClassName('arow');
+  for(var j = 0; j < btns.length; j++){
+    btns[j].addEventListener('click', function(){
+      detail = approved[Number(this.getAttribute('data-i'))];
+      renderApprovedDetail();
+    });
+  }
 
   window.scrollTo(0, 0);
 }
+
+function renderApprovedDetail(){
+  counts();
+  el('rail').innerHTML = '';
+  el('bar').style.display = 'none';
+
+  var p = detail;
+  var edited = p.final_comment && p.draft_comment &&
+               p.final_comment.trim() !== p.draft_comment.trim();
+  var liveUrl = 'https://www.linkedin.com/feed/update/' + p.activity_urn + '/';
+
+  el('stage').innerHTML =
+    '<button class="back" id="bk">&#8592; Back to approved</button>' +
+    whoBlock(p) +
+    '<div class="grid">' +
+      '<div>' + embedPanel(p, true) + '</div>' +
+      '<div class="right">' +
+        '<div class="panel">' +
+          '<div class="ph"><span>What went out</span>' +
+            '<span class="cnt">' + esc(niceDate(p.decided_at)) + '</span></div>' +
+          '<div class="pb">' +
+            '<p class="said">' + esc(p.final_comment || p.draft_comment) + '</p>' +
+            (edited ? '<p class="wasdraft"><b>Claude had drafted</b>' +
+              esc(p.draft_comment) + '</p>' : '') +
+            '<a class="golink" href="' + liveUrl + '" target="_blank" rel="noopener">' +
+              'Open the post on LinkedIn &#8599;</a>' +
+          '</div>' +
+          '<div class="urn">' + esc(p.activity_urn) + '</div>' +
+        '</div>' +
+        '<div class="panel">' +
+          '<div class="ph"><span>Why it was picked</span></div>' +
+          '<div class="pb"><p class="why">' + esc(p.reason) + '</p></div>' +
+        '</div>' +
+        postToggle(p) +
+      '</div>' +
+    '</div>';
+
+  el('bk').addEventListener('click', function(){
+    detail = null;
+    renderApprovedList();
+  });
+
+  wireSizer(p);
+  wireToggle();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- rejected ---------- */
 
 function renderRejected(){
   counts();
@@ -469,28 +634,17 @@ function renderRejected(){
   if(!rows){ rows = '<p style="color:#9A9AA8">Nothing rejected yet.</p>'; }
 
   el('stage').innerHTML =
-    '<button class="back" id="bk">&#8592; Back to review</button>' +
     '<p class="rtitle">Rejected</p>' +
-    '<p class="rsub">Posts the filter dropped, plus the ones you passed on. ' +
-      'Pull any of them back if the call was wrong.</p>' + rows;
-
-  el('bk').addEventListener('click', function(){
-    view = 'queue';
-    render();
-  });
+    '<p class="rsub">Posts the filter dropped, plus the ones you passed on.</p>' + rows;
 
   var undos = el('stage').getElementsByClassName('undo');
   for(var j = 0; j < undos.length; j++){
     undos[j].addEventListener('click', function(){
       var btn = this;
-      var urn = btn.getAttribute('data-urn');
       btn.disabled = true;
       btn.textContent = 'Putting back...';
-      send(urn, 'pending', '')
-        .then(function(){
-          say('Back in the queue');
-          load();
-        })
+      send(btn.getAttribute('data-urn'), 'pending', '')
+        .then(function(){ say('Back in the queue'); load(); })
         .catch(function(err){
           btn.disabled = false;
           btn.textContent = 'Put it back in the queue';
@@ -503,7 +657,9 @@ function renderRejected(){
 }
 
 function render(){
-  if(view === 'rejected'){ renderRejected(); } else { renderQueue(); }
+  if(view === 'rejected'){ renderRejected(); }
+  else if(view === 'approved'){ detail ? renderApprovedDetail() : renderApprovedList(); }
+  else { renderQueue(); }
 }
 
 function setBusy(on){
@@ -532,6 +688,10 @@ function act(a){
     .then(function(){
       if(a === 'approved'){
         approvedCount++;
+        p.final_comment = text;
+        p.status = 'approved';
+        p.decided_at = new Date().toISOString();
+        approved.unshift(p);
         say('Approved and saved.');
       } else if(a === 'rewrite'){
         say('Marked for a rewrite.');
@@ -551,11 +711,15 @@ function act(a){
     });
 }
 
-el('rejbtn').addEventListener('click', function(){
-  view = view === 'rejected' ? 'queue' : 'rejected';
-  render();
+el('qbtn').addEventListener('click', function(){
+  view = 'queue'; detail = null; render();
 });
-
+el('abtn').addEventListener('click', function(){
+  view = 'approved'; detail = null; render();
+});
+el('rejbtn').addEventListener('click', function(){
+  view = 'rejected'; detail = null; render();
+});
 el('sync').addEventListener('click', function(){
   var b = this;
   b.className = 'sync busy';
