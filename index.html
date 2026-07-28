@@ -155,6 +155,19 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
   border-radius:12px;padding:11px 16px;font-family:Sora,sans-serif;
   font-size:13px;font-weight:500;margin-top:14px}
 .golink:hover{filter:brightness(1.1)}
+.postrow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.pbtn{font-family:Sora,sans-serif;font-size:13px;font-weight:500;cursor:pointer;
+  border-radius:12px;padding:11px 16px;border:1px solid transparent}
+.pbtn:active{transform:scale(.97)}
+.pbtn:disabled{opacity:.5;pointer-events:none}
+.pcopy{flex:1;background:var(--mint);color:#062015;font-weight:600}
+.pmark{background:var(--card2);color:var(--tx2);border-color:var(--line2)}
+.pmark:hover{border-color:var(--mint);color:var(--mint)}
+.donetag{display:inline-flex;align-items:center;padding:11px 16px;
+  font-family:Sora,sans-serif;font-size:13px;font-weight:500;
+  color:var(--mint);background:var(--mintbg);border:1px solid #235C40;
+  border-radius:12px}
+.posthint{font-size:12px;color:var(--tx3);margin:10px 0 0;line-height:1.5}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:50;
   padding:10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -295,6 +308,35 @@ function fitColour(n){
   if(n >= 8){ return '#7BE0A8'; }
   if(n >= 5){ return '#F0B44A'; }
   return '#FF8080';
+}
+
+function copyText(text, done){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      done(true);
+    }).catch(function(){
+      done(fallbackCopy(text));
+    });
+  } else {
+    done(fallbackCopy(text));
+  }
+}
+
+function fallbackCopy(text){
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch(e){
+    return false;
+  }
 }
 
 function niceDate(iso){
@@ -582,11 +624,16 @@ function renderApprovedDetail(){
           '<div class="ph"><span>What went out</span>' +
             '<span class="cnt">' + esc(niceDate(p.decided_at)) + '</span></div>' +
           '<div class="pb">' +
-            '<p class="said">' + esc(p.final_comment || p.draft_comment) + '</p>' +
+            '<p class="said" id="saidtext">' + esc(p.final_comment || p.draft_comment) + '</p>' +
             (edited ? '<p class="wasdraft"><b>Claude had drafted</b>' +
               esc(p.draft_comment) + '</p>' : '') +
-            '<a class="golink" href="' + liveUrl + '" target="_blank" rel="noopener">' +
-              'Open the post on LinkedIn &#8599;</a>' +
+            '<div class="postrow">' +
+              '<button class="pbtn pcopy" id="copyopen">Copy &amp; open post &#8599;</button>' +
+              (p.status === 'posted'
+                ? '<span class="donetag">&#10003; posted</span>'
+                : '<button class="pbtn pmark" id="markposted">Mark posted</button>') +
+            '</div>' +
+            '<p class="posthint" id="posthint">Tap copy &amp; open, paste into the comment box on LinkedIn, submit, then come back and mark it posted.</p>' +
           '</div>' +
           '<div class="urn">' + esc(p.activity_urn) + '</div>' +
         '</div>' +
@@ -602,6 +649,38 @@ function renderApprovedDetail(){
     detail = null;
     renderApprovedList();
   });
+
+  var commentText = p.final_comment || p.draft_comment;
+
+  el('copyopen').addEventListener('click', function(){
+    copyText(commentText, function(ok){
+      el('posthint').textContent = ok
+        ? 'Copied. Opening the post, long press the comment box and paste.'
+        : 'Could not auto copy. Select the comment text above and copy by hand, the post is opening now.';
+      window.open(liveUrl, '_blank', 'noopener');
+    });
+  });
+
+  var mark = el('markposted');
+  if(mark){
+    mark.addEventListener('click', function(){
+      mark.disabled = true;
+      mark.textContent = 'Marking...';
+      fetch(ENDPOINT + '?action=markposted&urn=' + encodeURIComponent(p.activity_urn) + '&t=' + Date.now())
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(!d.ok){ throw new Error(d.error || 'failed'); }
+          p.status = 'posted';
+          say('Marked posted');
+          load();
+        })
+        .catch(function(err){
+          mark.disabled = false;
+          mark.textContent = 'Mark posted';
+          say('Could not mark: ' + err.message, true);
+        });
+    });
+  }
 
   wireSizer(p);
   wireToggle();
