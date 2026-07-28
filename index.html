@@ -35,15 +35,21 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
 .brand b{font-family:Sora,sans-serif;font-size:12px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase}
 @media(max-width:430px){.brand b{display:none}}
-.pills{display:flex;gap:6px;align-items:center;flex:none}
-.pill{display:flex;align-items:baseline;gap:5px;padding:5px 9px;
+.pills{display:flex;gap:5px;align-items:center;flex:none}
+.pill{display:flex;align-items:baseline;gap:4px;padding:5px 8px;
   border-radius:100px;border:1px solid transparent;background:none;
   font-family:inherit;cursor:pointer}
 .pill b{font-family:Sora,sans-serif;font-size:13px;font-weight:600;line-height:1}
-.pill span{font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.pill span{font-size:9px;letter-spacing:.05em;text-transform:uppercase}
 .pill:active{transform:scale(.96)}
+@media(max-width:400px){
+  .pill{padding:5px 7px;gap:3px}
+  .pill span{font-size:8px;letter-spacing:.02em}
+}
 .p-gold{background:var(--goldbg);border-color:#4E3F24}
 .p-gold b{color:var(--gold)} .p-gold span{color:#A98A50}
+.p-amber{background:var(--amberbg);border-color:#4A3A18}
+.p-amber b{color:var(--amber)} .p-amber span{color:#B08A44}
 .p-rose{background:var(--rosebg);border-color:#4A2020}
 .p-rose b{color:var(--rose)} .p-rose span{color:#B26565}
 .p-mint{background:var(--mintbg);border-color:#235C40}
@@ -249,9 +255,10 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <div class="top">
   <div class="brand"><div class="mark">S</div><b>Review</b></div>
   <div class="pills">
-    <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>review</span></button>
-    <button class="pill p-mint" id="abtn"><b id="acount">0</b><span>approved</span></button>
-    <button class="pill p-rose" id="rejbtn"><b id="rcount">0</b><span>rejected</span></button>
+    <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Review</span></button>
+    <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
+    <button class="pill p-mint" id="abtn"><b id="acount">0</b><span>Apprv</span></button>
+    <button class="pill p-rose" id="rejbtn"><b id="rcount">0</b><span>Rjctd</span></button>
     <button class="sync" id="sync" aria-label="Reload">&#8635;</button>
   </div>
 </div>
@@ -275,7 +282,8 @@ var ENDPOINT = 'https://script.google.com/macros/s/AKfycbx6JNaX9xRLzggDHD4tRIB6G
 
 var queue = [];
 var rejected = [];
-var approved = [];
+var postPending = [];
+var posted = [];
 var historyDays = 10;
 var idx = 0;
 var approvedCount = 0;
@@ -359,11 +367,13 @@ function say(msg, bad){
 
 function counts(){
   el('pcount').textContent = Math.max(0, queue.length - idx);
+  el('ppcount').textContent = postPending.length;
+  el('acount').textContent = posted.length;
   el('rcount').textContent = rejected.length;
-  el('acount').textContent = approved.length;
 
   el('qbtn').className = 'pill p-gold' + (view === 'queue' ? ' sel' : '');
-  el('abtn').className = 'pill p-mint' + (view === 'approved' ? ' sel' : '');
+  el('ppbtn').className = 'pill p-amber' + (view === 'postpending' ? ' sel' : '');
+  el('abtn').className = 'pill p-mint' + (view === 'posted' ? ' sel' : '');
   el('rejbtn').className = 'pill p-rose' + (view === 'rejected' ? ' sel' : '');
 }
 
@@ -402,11 +412,12 @@ function load(){
       if(!d.ok){ throw new Error(d.error || 'Backend error'); }
       queue = d.pending || [];
       rejected = d.rejected || [];
-      approved = d.approved || [];
+      postPending = d.post_pending || [];
+      posted = d.posted || [];
       historyDays = d.history_days || 10;
       idx = 0;
       approvedCount = 0;
-      view = 'queue';
+      if(view !== 'postpending' && view !== 'posted' && view !== 'rejected'){ view = 'queue'; }
       detail = null;
       render();
     })
@@ -452,6 +463,12 @@ function whoBlock(p){
   '</div>';
 }
 
+var HEIGHT_BUFFER = 200;
+
+function renderHeight(p){
+  return Math.max(300, Number(p.embed_height) || 900) + HEIGHT_BUFFER;
+}
+
 function embedPanel(p, withSizer){
   return '<div class="panel">' +
     '<div class="ph"><span>As it appears on LinkedIn</span>' +
@@ -463,7 +480,7 @@ function embedPanel(p, withSizer){
     '</div>' +
     '<div class="framewrap">' +
       '<iframe class="frame" id="fr" title="Post by ' + esc(p.author) + '" ' +
-        'style="height:' + p.embed_height + 'px" ' +
+        'style="height:' + renderHeight(p) + 'px" ' +
         'src="https://www.linkedin.com/embed/feed/update/' + esc(p.post_urn) + '"></iframe>' +
     '</div>' +
   '</div>';
@@ -493,7 +510,7 @@ function wireSizer(p){
   if(!g){ return; }
   function resize(delta){
     p.embed_height = Math.max(300, Number(p.embed_height) + delta);
-    el('fr').style.height = p.embed_height + 'px';
+    el('fr').style.height = renderHeight(p) + 'px';
     el('hval').textContent = p.embed_height;
   }
   g.addEventListener('click', function(){ resize(100); });
@@ -517,7 +534,10 @@ function renderQueue(){
     el('rail').innerHTML = '';
     el('stage').innerHTML =
       '<div class="fin"><div class="tick">&#10003;</div><h2>Queue cleared</h2><p>' +
-      approvedCount + ' approved this session. Next batch lands after the next run.</p></div>';
+      (postPending.length
+        ? postPending.length + ' waiting in Post. Tap the Post tab to send them out.'
+        : 'Nothing waiting. Next batch lands after the next run.') +
+      '</p></div>';
     window.scrollTo(0, 0);
     return;
   }
@@ -559,19 +579,22 @@ function renderQueue(){
   window.scrollTo(0, 0);
 }
 
-/* ---------- approved history ---------- */
+/* ---------- post pending and posted ---------- */
 
-function renderApprovedList(){
+function cardData(kind){ return kind === 'posted' ? posted : postPending; }
+
+function renderCardList(kind){
   counts();
   el('rail').innerHTML = '';
   el('bar').style.display = 'none';
 
+  var list = cardData(kind);
   var rows = '';
-  for(var i = 0; i < approved.length; i++){
-    var a = approved[i];
-    var chip = a.status === 'posted'
+  for(var i = 0; i < list.length; i++){
+    var a = list[i];
+    var chip = kind === 'posted'
       ? '<span class="achip chip-p">posted</span>'
-      : '<span class="achip chip-a">queued to post</span>';
+      : '<span class="achip chip-a">to post</span>';
     rows +=
       '<button class="arow" data-i="' + i + '">' +
         '<span class="apic">' + esc(initials(a.author)) + '</span>' +
@@ -584,44 +607,52 @@ function renderApprovedList(){
       '</button>';
   }
 
+  var title = kind === 'posted' ? 'Approved' : 'Post pending';
+  var sub = kind === 'posted'
+    ? 'Comments you have already posted, last ' + historyDays + ' days. Tap one to verify it went out.'
+    : 'Approved and waiting to be posted. Tap one, copy the comment, open the post and paste it in.';
+
   if(!rows){
-    rows = '<p style="color:#9A9AA8">Nothing approved in the last ' + historyDays + ' days.</p>';
+    rows = '<p style="color:#9A9AA8">' +
+      (kind === 'posted' ? 'Nothing posted in the last ' + historyDays + ' days.'
+                         : 'Nothing waiting to post. Approve some in Review.') +
+      '</p>';
   }
 
   el('stage').innerHTML =
-    '<p class="rtitle">Approved</p>' +
-    '<p class="rsub">Everything you signed off in the last ' + historyDays +
-      ' days. Tap any one to see the post and check the comment went out.</p>' + rows;
+    '<p class="rtitle">' + title + '</p><p class="rsub">' + sub + '</p>' + rows;
 
   var btns = el('stage').getElementsByClassName('arow');
   for(var j = 0; j < btns.length; j++){
     btns[j].addEventListener('click', function(){
-      detail = approved[Number(this.getAttribute('data-i'))];
-      renderApprovedDetail();
+      detail = cardData(kind)[Number(this.getAttribute('data-i'))];
+      renderCardDetail(kind);
     });
   }
 
   window.scrollTo(0, 0);
 }
 
-function renderApprovedDetail(){
+function renderCardDetail(kind){
   counts();
   el('rail').innerHTML = '';
   el('bar').style.display = 'none';
 
   var p = detail;
+  var isPosted = kind === 'posted';
   var edited = p.final_comment && p.draft_comment &&
                p.final_comment.trim() !== p.draft_comment.trim();
   var liveUrl = 'https://www.linkedin.com/feed/update/' + p.activity_urn + '/';
+  var headLabel = isPosted ? 'What went out' : 'Comment to post';
 
   el('stage').innerHTML =
-    '<button class="back" id="bk">&#8592; Back to approved</button>' +
+    '<button class="back" id="bk">&#8592; Back</button>' +
     whoBlock(p) +
     '<div class="grid">' +
       '<div>' + embedPanel(p, true) + '</div>' +
       '<div class="right">' +
         '<div class="panel">' +
-          '<div class="ph"><span>What went out</span>' +
+          '<div class="ph"><span>' + headLabel + '</span>' +
             '<span class="cnt">' + esc(niceDate(p.decided_at)) + '</span></div>' +
           '<div class="pb">' +
             '<p class="said" id="saidtext">' + esc(p.final_comment || p.draft_comment) + '</p>' +
@@ -629,11 +660,15 @@ function renderApprovedDetail(){
               esc(p.draft_comment) + '</p>' : '') +
             '<div class="postrow">' +
               '<button class="pbtn pcopy" id="copyopen">Copy &amp; open post &#8599;</button>' +
-              (p.status === 'posted'
+              (isPosted
                 ? '<span class="donetag">&#10003; posted</span>'
                 : '<button class="pbtn pmark" id="markposted">Mark posted</button>') +
             '</div>' +
-            '<p class="posthint" id="posthint">Tap copy &amp; open, paste into the comment box on LinkedIn, submit, then come back and mark it posted.</p>' +
+            '<p class="posthint" id="posthint">' +
+              (isPosted
+                ? 'Already posted. Open the post to check the comment is live.'
+                : 'Tap copy &amp; open, paste into the comment box on LinkedIn, submit, then come back and tap mark posted.') +
+            '</p>' +
           '</div>' +
           '<div class="urn">' + esc(p.activity_urn) + '</div>' +
         '</div>' +
@@ -647,7 +682,7 @@ function renderApprovedDetail(){
 
   el('bk').addEventListener('click', function(){
     detail = null;
-    renderApprovedList();
+    renderCardList(kind);
   });
 
   var commentText = p.final_comment || p.draft_comment;
@@ -670,8 +705,9 @@ function renderApprovedDetail(){
         .then(function(r){ return r.json(); })
         .then(function(d){
           if(!d.ok){ throw new Error(d.error || 'failed'); }
-          p.status = 'posted';
           say('Marked posted');
+          detail = null;
+          view = 'postpending';
           load();
         })
         .catch(function(err){
@@ -737,7 +773,8 @@ function renderRejected(){
 
 function render(){
   if(view === 'rejected'){ renderRejected(); }
-  else if(view === 'approved'){ detail ? renderApprovedDetail() : renderApprovedList(); }
+  else if(view === 'postpending'){ detail ? renderCardDetail('postpending') : renderCardList('postpending'); }
+  else if(view === 'posted'){ detail ? renderCardDetail('posted') : renderCardList('posted'); }
   else { renderQueue(); }
 }
 
@@ -766,12 +803,11 @@ function act(a){
   send(p.activity_urn, a, text)
     .then(function(){
       if(a === 'approved'){
-        approvedCount++;
         p.final_comment = text;
         p.status = 'approved';
         p.decided_at = new Date().toISOString();
-        approved.unshift(p);
-        say('Approved and saved.');
+        postPending.unshift(p);
+        say('Approved. Waiting in Post.');
       } else if(a === 'rewrite'){
         say('Marked for a rewrite.');
       } else {
@@ -793,8 +829,11 @@ function act(a){
 el('qbtn').addEventListener('click', function(){
   view = 'queue'; detail = null; render();
 });
+el('ppbtn').addEventListener('click', function(){
+  view = 'postpending'; detail = null; render();
+});
 el('abtn').addEventListener('click', function(){
-  view = 'approved'; detail = null; render();
+  view = 'posted'; detail = null; render();
 });
 el('rejbtn').addEventListener('click', function(){
   view = 'rejected'; detail = null; render();
