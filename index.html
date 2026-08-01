@@ -253,7 +253,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v3-h200</span></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v5-x2.2</span></div>
   <div class="pills">
     <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Review</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
@@ -463,10 +463,12 @@ function whoBlock(p){
   '</div>';
 }
 
-var HEIGHT_BUFFER = 200;
+var HEIGHT_MULT = 2.2;
+var HEIGHT_MIN = 700;
 
 function renderHeight(p){
-  return Math.max(300, Number(p.embed_height) || 900) + HEIGHT_BUFFER;
+  var base = Math.max(300, Number(p.embed_height) || 900);
+  return Math.max(HEIGHT_MIN, Math.round(base * HEIGHT_MULT));
 }
 
 function embedPanel(p, withSizer){
