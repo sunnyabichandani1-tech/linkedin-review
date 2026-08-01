@@ -272,6 +272,14 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .chip-a{background:var(--amberbg);color:var(--amber)}
 .chip-p{background:var(--mintbg);color:var(--mint)}
 .chip-r{background:#0E2A2E;color:#6FD8E0}
+.fchips{display:flex;gap:8px;margin:0 0 14px}
+.fchip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;
+  border-radius:100px;border:1px solid var(--line2);background:var(--card2);
+  color:var(--tx2);font-family:Sora,sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer}
+.fchip b{font-size:11px;opacity:.7}
+.fchip.on{background:var(--mintbg);border-color:#235C40;color:var(--mint)}
+.fchip:active{transform:scale(.96)}
 .adate{font-size:11px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
 .asnip{font-size:13.5px;color:var(--tx2);margin:6px 0 0;overflow:hidden;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -281,11 +289,10 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v8-noblank</span></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v9-apprv</span></div>
   <div class="pills">
     <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Rev</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
-    <button class="pill p-cyan" id="rcbtn"><b id="rccount">0</b><span>Rcnt</span></button>
     <button class="pill p-mint" id="abtn"><b id="acount">0</b><span>Apprv</span></button>
     <button class="pill p-rose" id="rejbtn"><b id="rcount">0</b><span>Rjctd</span></button>
     <button class="sync" id="sync" aria-label="Reload">&#8635;</button>
@@ -313,6 +320,7 @@ var queue = [];
 var rejected = [];
 var postPending = [];
 var recentList = [];
+var apprvFilter = { recent: true, completed: true };
 var posted = [];
 var historyDays = 10;
 var recentMinutes = 30;
@@ -358,6 +366,22 @@ function fitColour(n){
   if(n >= 8){ return '#7BE0A8'; }
   if(n >= 5){ return '#F0B44A'; }
   return '#FF8080';
+}
+
+function openPost(url){
+  // an anchor click opens a new tab the way a normal link does, which mobile
+  // browsers handle without the blank-screen reload that window.open can cause.
+  try {
+    var a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e){
+    window.open(url, '_blank', 'noopener');
+  }
 }
 
 function copyText(text, done){
@@ -410,13 +434,11 @@ function say(msg, bad){
 function counts(){
   el('pcount').textContent = Math.max(0, queue.length - idx);
   el('ppcount').textContent = postPending.length;
-  el('rccount').textContent = recentList.length;
-  el('acount').textContent = posted.length;
+  el('acount').textContent = recentList.length + posted.length;
   el('rcount').textContent = rejected.length;
 
   el('qbtn').className = 'pill p-gold' + (view === 'queue' ? ' sel' : '');
   el('ppbtn').className = 'pill p-amber' + (view === 'postpending' ? ' sel' : '');
-  el('rcbtn').className = 'pill p-cyan' + (view === 'recent' ? ' sel' : '');
   el('abtn').className = 'pill p-mint' + (view === 'posted' ? ' sel' : '');
   el('rejbtn').className = 'pill p-rose' + (view === 'rejected' ? ' sel' : '');
 }
@@ -705,6 +727,95 @@ function renderCardList(kind){
   window.scrollTo(0, 0);
 }
 
+function renderApprvList(){
+  counts();
+  el('rail').innerHTML = '';
+  el('bar').style.display = 'none';
+
+  // ensure at least one chip is always on
+  if(!apprvFilter.recent && !apprvFilter.completed){ apprvFilter.recent = true; apprvFilter.completed = true; }
+
+  // build a merged list, tagging each item with its source
+  var merged = [];
+  var k, a;
+  if(apprvFilter.recent){
+    for(k = 0; k < recentList.length; k++){
+      a = recentList[k]; a._src = 'recent'; merged.push(a);
+    }
+  }
+  if(apprvFilter.completed){
+    for(k = 0; k < posted.length; k++){
+      a = posted[k]; a._src = 'posted'; merged.push(a);
+    }
+  }
+
+  var chips =
+    '<div class="fchips">' +
+      '<button class="fchip' + (apprvFilter.recent ? ' on' : '') + '" id="fRecent">Recent ' +
+        '<b>' + recentList.length + '</b></button>' +
+      '<button class="fchip' + (apprvFilter.completed ? ' on' : '') + '" id="fCompleted">Completed ' +
+        '<b>' + posted.length + '</b></button>' +
+    '</div>';
+
+  var rows = '';
+  for(var i = 0; i < merged.length; i++){
+    a = merged[i];
+    var isR = a._src === 'recent';
+    var chip = isR
+      ? '<span class="achip chip-r">' + esc(recentLeft(a.recent_at)) + '</span>'
+      : '<span class="achip chip-p">posted</span>';
+    var when = isR ? '' : niceDate(a.decided_at);
+    rows +=
+      '<button class="arow" data-src="' + a._src + '" data-i="' + i + '">' +
+        '<span class="apic">' + esc(initials(a.author)) + '</span>' +
+        '<span class="atx">' +
+          '<span class="ahead"><span class="aname">' + esc(a.author) + '</span>' +
+            chip + '<span class="adate">' + esc(when) + '</span></span>' +
+          '<span class="asnip">' + esc(a.final_comment || a.draft_comment) + '</span>' +
+        '</span>' +
+        '<span class="achev">&#8250;</span>' +
+      '</button>';
+  }
+
+  if(!rows){ rows = '<p style="color:#9A9AA8">Nothing here for this filter.</p>'; }
+
+  el('stage').innerHTML =
+    '<p class="rtitle">Approved</p>' +
+    '<p class="rsub">Recent are still in the ' + (recentMinutes || 30) +
+      ' minute window and move to Completed on their own. Toggle to filter.</p>' +
+    chips + rows;
+
+  el('fRecent').addEventListener('click', function(){
+    apprvFilter.recent = !apprvFilter.recent;
+    renderApprvList();
+  });
+  el('fCompleted').addEventListener('click', function(){
+    apprvFilter.completed = !apprvFilter.completed;
+    renderApprvList();
+  });
+
+  var btns = el('stage').getElementsByClassName('arow');
+  for(var j = 0; j < btns.length; j++){
+    btns[j].addEventListener('click', function(){
+      var src = this.getAttribute('data-src');
+      var idx2 = Number(this.getAttribute('data-i'));
+      var srcList = src === 'recent' ? recentList : posted;
+      // data-i is the merged index, so recompute against the source array
+      var target = null, seen = -1;
+      // find the nth item of this src in merged order
+      var count = 0;
+      var mergedRef = [];
+      if(apprvFilter.recent){ for(var x=0;x<recentList.length;x++){ recentList[x]._src='recent'; mergedRef.push(recentList[x]); } }
+      if(apprvFilter.completed){ for(var y=0;y<posted.length;y++){ posted[y]._src='posted'; mergedRef.push(posted[y]); } }
+      target = mergedRef[idx2];
+      detail = target;
+      renderCardDetail(src === 'recent' ? 'recent' : 'posted');
+    });
+  }
+
+  window.scrollTo(0, 0);
+}
+
 function renderCardDetail(kind){
   counts();
   el('rail').innerHTML = '';
@@ -792,7 +903,8 @@ function renderCardDetail(kind){
       el('posthint').textContent = ok
         ? 'Copied. Opening the post, long press the comment box and paste.'
         : 'Could not auto copy. Select the comment above and copy by hand, the post is opening now.';
-      window.open(liveUrl, '_blank', 'noopener');
+
+      openPost(liveUrl);
 
       if(!isPosted && !isRecent){
         // land back on the Post list, no blanking reload
@@ -882,8 +994,7 @@ function renderRejected(){
 function render(){
   if(view === 'rejected'){ renderRejected(); }
   else if(view === 'postpending'){ detail ? renderCardDetail('postpending') : renderCardList('postpending'); }
-  else if(view === 'recent'){ detail ? renderCardDetail('recent') : renderCardList('recent'); }
-  else if(view === 'posted'){ detail ? renderCardDetail('posted') : renderCardList('posted'); }
+  else if(view === 'posted'){ detail ? renderCardDetail(detail.status === 'recent' ? 'recent' : 'posted') : renderApprvList(); }
   else { renderQueue(); }
 }
 
@@ -992,11 +1103,8 @@ el('qbtn').addEventListener('click', function(){
 el('ppbtn').addEventListener('click', function(){
   view = 'postpending'; detail = null; render();
 });
-el('rcbtn').addEventListener('click', function(){
-  view = 'recent'; detail = null; render();
-});
 el('abtn').addEventListener('click', function(){
-  view = 'posted'; detail = null; render();
+  view = 'posted'; detail = null; apprvFilter = { recent: true, completed: true }; render();
 });
 el('rejbtn').addEventListener('click', function(){
   view = 'rejected'; detail = null; render();
