@@ -281,7 +281,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v6-recent-rw</span></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v8-noblank</span></div>
   <div class="pills">
     <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Rev</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
@@ -511,12 +511,14 @@ function whoBlock(p){
   '</div>';
 }
 
+// HEIGHT TUNING: change this one number and redeploy to taste.
+// 1.0 = exact real height. 1.2 = 20% taller. Higher = taller frames.
+// Try 1.1, 1.2, 1.3 to stop long posts from scrolling. Do not go below 1.0.
 var HEIGHT_MULT = 1.2;
-var HEIGHT_MIN = 700;
 
 function renderHeight(p){
   var base = Math.max(300, Number(p.embed_height) || 900);
-  return Math.max(HEIGHT_MIN, Math.round(base * HEIGHT_MULT));
+  return Math.round(base * HEIGHT_MULT);
 }
 
 function embedPanel(p, withSizer){
@@ -722,7 +724,7 @@ function renderCardDetail(kind){
   } else if(isRecent){
     rightButton = '<button class="pbtn pmark" id="marknow">Mark posted now</button>';
   } else {
-    rightButton = '<span class="donetag" style="opacity:.6">moves to Recent</span>';
+    rightButton = '';
   }
 
   var hint;
@@ -771,27 +773,33 @@ function renderCardDetail(kind){
   var commentText = p.final_comment || p.draft_comment;
 
   el('copyopen').addEventListener('click', function(){
+    // fire the status move FIRST, before navigating away, so mobile
+    // does not cancel the request when the tab opens LinkedIn.
+    if(!isPosted && !isRecent){
+      fetch(ENDPOINT + '?action=torecent&urn=' + encodeURIComponent(p.activity_urn) + '&t=' + Date.now())
+        .catch(function(){ /* ignore, the copy and open still work */ });
+
+      // update local state immediately so no network reload is needed on return
+      var mi = postPending.indexOf(p);
+      if(mi !== -1){ postPending.splice(mi, 1); }
+      p.status = 'recent';
+      p.recent_at = new Date().toISOString();
+      p.recent_ms = Date.now();
+      recentList.unshift(p);
+    }
+
     copyText(commentText, function(ok){
       el('posthint').textContent = ok
         ? 'Copied. Opening the post, long press the comment box and paste.'
         : 'Could not auto copy. Select the comment above and copy by hand, the post is opening now.';
       window.open(liveUrl, '_blank', 'noopener');
 
-      // from Post pending, tapping copy-and-open files it into Recent
       if(!isPosted && !isRecent){
-        fetch(ENDPOINT + '?action=torecent&urn=' + encodeURIComponent(p.activity_urn) + '&t=' + Date.now())
-          .then(function(r){ return r.json(); })
-          .then(function(d){
-            if(d.ok){
-              setTimeout(function(){
-                say('Moved to Recent');
-                detail = null;
-                view = 'recent';
-                load();
-              }, 1500);
-            }
-          })
-          .catch(function(){ /* opening the post still worked, ignore */ });
+        // land back on the Post list, no blanking reload
+        detail = null;
+        view = 'postpending';
+        renderCardList('postpending');
+        say('Moved to Recent');
       }
     });
   });
