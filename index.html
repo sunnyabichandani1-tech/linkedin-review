@@ -253,7 +253,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v3-h200</span></div>
   <div class="pills">
     <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Review</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
@@ -849,7 +849,7 @@ var barButtons = el('bar').getElementsByTagName('button');
 for(var b = 0; b < barButtons.length; b++){
   barButtons[b].addEventListener('click', function(){
     act(this.getAttribute('data-a'));
-  });    
+  });
 }
 
 load();
