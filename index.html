@@ -35,16 +35,17 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
 .brand b{font-family:Sora,sans-serif;font-size:12px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase}
 @media(max-width:430px){.brand b{display:none}}
-.pills{display:flex;gap:5px;align-items:center;flex:none}
-.pill{display:flex;align-items:baseline;gap:4px;padding:5px 8px;
+.pills{display:flex;gap:4px;align-items:center;flex:none}
+.pill{display:flex;align-items:baseline;gap:3px;padding:5px 7px;
   border-radius:100px;border:1px solid transparent;background:none;
   font-family:inherit;cursor:pointer}
-.pill b{font-family:Sora,sans-serif;font-size:13px;font-weight:600;line-height:1}
-.pill span{font-size:9px;letter-spacing:.05em;text-transform:uppercase}
+.pill b{font-family:Sora,sans-serif;font-size:12.5px;font-weight:600;line-height:1}
+.pill span{font-size:8.5px;letter-spacing:.04em;text-transform:uppercase}
 .pill:active{transform:scale(.96)}
 @media(max-width:400px){
-  .pill{padding:5px 7px;gap:3px}
-  .pill span{font-size:8px;letter-spacing:.02em}
+  .pill{padding:4px 6px;gap:2px}
+  .pill span{font-size:8px;letter-spacing:0}
+  .pill b{font-size:12px}
 }
 .p-gold{background:var(--goldbg);border-color:#4E3F24}
 .p-gold b{color:var(--gold)} .p-gold span{color:#A98A50}
@@ -54,6 +55,8 @@ body{font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;
 .p-rose b{color:var(--rose)} .p-rose span{color:#B26565}
 .p-mint{background:var(--mintbg);border-color:#235C40}
 .p-mint b{color:var(--mint)} .p-mint span{color:#5C9C7B}
+.p-cyan{background:#0E2A2E;border-color:#1E4A50}
+.p-cyan b{color:#6FD8E0} .p-cyan span{color:#4E9098}
 .pill.sel{box-shadow:0 0 0 1px currentColor}
 .sync{width:28px;height:28px;border-radius:9px;cursor:pointer;flex:none;
   background:var(--card2);border:1px solid var(--line2);color:var(--tx2);
@@ -174,6 +177,30 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
   color:var(--mint);background:var(--mintbg);border:1px solid #235C40;
   border-radius:12px}
 .posthint{font-size:12px;color:var(--tx3);margin:10px 0 0;line-height:1.5}
+.modal-back{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);
+  backdrop-filter:blur(3px);display:flex;align-items:flex-end;
+  justify-content:center;padding:0}
+@media(min-width:600px){.modal-back{align-items:center;padding:20px}}
+.modal{background:var(--card);border:1px solid var(--line2);
+  border-radius:20px 20px 0 0;width:100%;max-width:560px;padding:20px 18px 24px;
+  animation:slideup .2s ease}
+@media(min-width:600px){.modal{border-radius:18px}}
+@keyframes slideup{from{transform:translateY(30px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.modal-h{font-family:Sora,sans-serif;font-size:17px;font-weight:600;margin-bottom:4px}
+.modal-sub{font-size:12.5px;color:var(--tx2);margin:0 0 14px;line-height:1.5}
+.modal-draft{font-size:13.5px;color:var(--tx2);background:var(--card2);
+  border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+  margin-bottom:12px;white-space:pre-wrap;line-height:1.55}
+#rwnote{width:100%;min-height:96px;resize:vertical;padding:13px;border-radius:13px;
+  border:1px solid var(--line2);background:var(--card2);color:var(--tx);
+  font-family:Inter,sans-serif;font-size:15px;line-height:1.6}
+#rwnote:focus{outline:none;border-color:var(--gold)}
+.modal-row{display:flex;gap:9px;margin-top:14px}
+.mbtn{font-family:Sora,sans-serif;font-size:14px;font-weight:500;cursor:pointer;
+  border-radius:13px;padding:13px 16px;border:1px solid transparent}
+.mcancel{background:var(--card2);color:var(--tx2);border-color:var(--line2)}
+.msend{flex:1;background:var(--amber);color:#241a06;font-weight:600}
+.mbtn:disabled{opacity:.5;pointer-events:none}
 
 .bar{position:fixed;left:0;right:0;bottom:0;z-index:50;
   padding:10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -244,6 +271,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
   text-transform:uppercase;padding:2px 7px;border-radius:100px}
 .chip-a{background:var(--amberbg);color:var(--amber)}
 .chip-p{background:var(--mintbg);color:var(--mint)}
+.chip-r{background:#0E2A2E;color:#6FD8E0}
 .adate{font-size:11px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
 .asnip{font-size:13.5px;color:var(--tx2);margin:6px 0 0;overflow:hidden;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -253,10 +281,11 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v5-x2.2</span></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v6-recent-rw</span></div>
   <div class="pills">
-    <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Review</span></button>
+    <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Rev</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
+    <button class="pill p-cyan" id="rcbtn"><b id="rccount">0</b><span>Rcnt</span></button>
     <button class="pill p-mint" id="abtn"><b id="acount">0</b><span>Apprv</span></button>
     <button class="pill p-rose" id="rejbtn"><b id="rcount">0</b><span>Rjctd</span></button>
     <button class="sync" id="sync" aria-label="Reload">&#8635;</button>
@@ -283,8 +312,21 @@ var ENDPOINT = 'https://script.google.com/macros/s/AKfycbx6JNaX9xRLzggDHD4tRIB6G
 var queue = [];
 var rejected = [];
 var postPending = [];
+var recentList = [];
 var posted = [];
 var historyDays = 10;
+var recentMinutes = 30;
+var revisingCount = 0;
+
+function recentLeft(iso){
+  if(!iso){ return 'soon'; }
+  var d = new Date(iso);
+  if(isNaN(d.getTime())){ return 'soon'; }
+  var mins = recentMinutes - Math.floor((Date.now() - d.getTime()) / 60000);
+  if(mins <= 0){ return 'any moment'; }
+  if(mins === 1){ return '1 min'; }
+  return mins + ' min';
+}
 var idx = 0;
 var approvedCount = 0;
 var view = 'queue';
@@ -368,11 +410,13 @@ function say(msg, bad){
 function counts(){
   el('pcount').textContent = Math.max(0, queue.length - idx);
   el('ppcount').textContent = postPending.length;
+  el('rccount').textContent = recentList.length;
   el('acount').textContent = posted.length;
   el('rcount').textContent = rejected.length;
 
   el('qbtn').className = 'pill p-gold' + (view === 'queue' ? ' sel' : '');
   el('ppbtn').className = 'pill p-amber' + (view === 'postpending' ? ' sel' : '');
+  el('rcbtn').className = 'pill p-cyan' + (view === 'recent' ? ' sel' : '');
   el('abtn').className = 'pill p-mint' + (view === 'posted' ? ' sel' : '');
   el('rejbtn').className = 'pill p-rose' + (view === 'rejected' ? ' sel' : '');
 }
@@ -410,11 +454,15 @@ function load(){
     .then(function(r){ return r.json(); })
     .then(function(d){
       if(!d.ok){ throw new Error(d.error || 'Backend error'); }
-      queue = d.pending || [];
+      var allPending = d.pending || [];
+      queue = allPending.filter(function(x){ return !x.revising; });
+      revisingCount = allPending.length - queue.length;
       rejected = d.rejected || [];
       postPending = d.post_pending || [];
+      recentList = d.recent || [];
       posted = d.posted || [];
       historyDays = d.history_days || 10;
+      recentMinutes = d.recent_minutes || 30;
       idx = 0;
       approvedCount = 0;
       if(view !== 'postpending' && view !== 'posted' && view !== 'rejected'){ view = 'queue'; }
@@ -427,11 +475,11 @@ function load(){
     });
 }
 
-function send(urn, action, comment){
+function send(urn, action, comment, note){
   return fetch(ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ urn: urn, action: action, comment: comment })
+    body: JSON.stringify({ urn: urn, action: action, comment: comment, note: note || '' })
   })
   .then(function(r){ return r.json(); })
   .then(function(d){
@@ -526,7 +574,10 @@ function renderQueue(){
   drawRail();
 
   if(!queue.length){
-    showState('Nothing waiting', 'No pending rows right now.', true);
+    var msg = revisingCount
+      ? revisingCount + ' being revised, back here in a few minutes.'
+      : 'No pending rows right now.';
+    showState('Nothing to review', msg, true);
     counts();
     return;
   }
@@ -534,11 +585,12 @@ function renderQueue(){
   if(idx >= queue.length){
     el('bar').style.display = 'none';
     el('rail').innerHTML = '';
+    var tail = revisingCount ? ' ' + revisingCount + ' being revised.' : '';
     el('stage').innerHTML =
       '<div class="fin"><div class="tick">&#10003;</div><h2>Queue cleared</h2><p>' +
       (postPending.length
         ? postPending.length + ' waiting in Post. Tap the Post tab to send them out.'
-        : 'Nothing waiting. Next batch lands after the next run.') +
+        : 'Nothing waiting. Next batch lands after the next run.') + tail +
       '</p></div>';
     window.scrollTo(0, 0);
     return;
@@ -583,7 +635,11 @@ function renderQueue(){
 
 /* ---------- post pending and posted ---------- */
 
-function cardData(kind){ return kind === 'posted' ? posted : postPending; }
+function cardData(kind){
+  if(kind === 'posted'){ return posted; }
+  if(kind === 'recent'){ return recentList; }
+  return postPending;
+}
 
 function renderCardList(kind){
   counts();
@@ -594,31 +650,43 @@ function renderCardList(kind){
   var rows = '';
   for(var i = 0; i < list.length; i++){
     var a = list[i];
-    var chip = kind === 'posted'
-      ? '<span class="achip chip-p">posted</span>'
-      : '<span class="achip chip-a">to post</span>';
+    var chip;
+    if(kind === 'posted'){ chip = '<span class="achip chip-p">posted</span>'; }
+    else if(kind === 'recent'){ chip = '<span class="achip chip-r">posting</span>'; }
+    else { chip = '<span class="achip chip-a">to post</span>'; }
+
+    var when = kind === 'recent' ? recentLeft(a.recent_at) : niceDate(a.decided_at);
+
     rows +=
       '<button class="arow" data-i="' + i + '">' +
         '<span class="apic">' + esc(initials(a.author)) + '</span>' +
         '<span class="atx">' +
           '<span class="ahead"><span class="aname">' + esc(a.author) + '</span>' +
-            chip + '<span class="adate">' + esc(niceDate(a.decided_at)) + '</span></span>' +
+            chip + '<span class="adate">' + esc(when) + '</span></span>' +
           '<span class="asnip">' + esc(a.final_comment || a.draft_comment) + '</span>' +
         '</span>' +
         '<span class="achev">&#8250;</span>' +
       '</button>';
   }
 
-  var title = kind === 'posted' ? 'Approved' : 'Post pending';
-  var sub = kind === 'posted'
-    ? 'Comments you have already posted, last ' + historyDays + ' days. Tap one to verify it went out.'
-    : 'Approved and waiting to be posted. Tap one, copy the comment, open the post and paste it in.';
+  var title, sub;
+  if(kind === 'posted'){
+    title = 'Approved';
+    sub = 'Comments already posted, last ' + historyDays + ' days. Tap one to verify it went out.';
+  } else if(kind === 'recent'){
+    title = 'Recent';
+    sub = 'You opened these to post. They move to Approved automatically after ' +
+          (recentMinutes || 30) + ' minutes. If a paste did not land, open it again from here.';
+  } else {
+    title = 'Post pending';
+    sub = 'Approved and waiting to be posted. Tap one, copy the comment, open the post and paste it in.';
+  }
 
   if(!rows){
-    rows = '<p style="color:#9A9AA8">' +
-      (kind === 'posted' ? 'Nothing posted in the last ' + historyDays + ' days.'
-                         : 'Nothing waiting to post. Approve some in Review.') +
-      '</p>';
+    var empty = kind === 'posted' ? 'Nothing posted in the last ' + historyDays + ' days.'
+              : kind === 'recent' ? 'Nothing in flight right now.'
+              : 'Nothing waiting to post. Approve some in Review.';
+    rows = '<p style="color:#9A9AA8">' + empty + '</p>';
   }
 
   el('stage').innerHTML =
@@ -642,10 +710,29 @@ function renderCardDetail(kind){
 
   var p = detail;
   var isPosted = kind === 'posted';
+  var isRecent = kind === 'recent';
   var edited = p.final_comment && p.draft_comment &&
                p.final_comment.trim() !== p.draft_comment.trim();
   var liveUrl = 'https://www.linkedin.com/feed/update/' + p.activity_urn + '/';
   var headLabel = isPosted ? 'What went out' : 'Comment to post';
+
+  var rightButton;
+  if(isPosted){
+    rightButton = '<span class="donetag">&#10003; posted</span>';
+  } else if(isRecent){
+    rightButton = '<button class="pbtn pmark" id="marknow">Mark posted now</button>';
+  } else {
+    rightButton = '<span class="donetag" style="opacity:.6">moves to Recent</span>';
+  }
+
+  var hint;
+  if(isPosted){
+    hint = 'Already posted. Open the post to check the comment is live.';
+  } else if(isRecent){
+    hint = 'Waiting to auto-file in ' + recentLeft(p.recent_at) + '. If your paste did not land, tap copy and open again. Or mark it posted now to file it immediately.';
+  } else {
+    hint = 'Tap copy and open. It copies your comment, opens the post, and moves this into Recent so you can double check it landed.';
+  }
 
   el('stage').innerHTML =
     '<button class="back" id="bk">&#8592; Back</button>' +
@@ -662,15 +749,9 @@ function renderCardDetail(kind){
               esc(p.draft_comment) + '</p>' : '') +
             '<div class="postrow">' +
               '<button class="pbtn pcopy" id="copyopen">Copy &amp; open post &#8599;</button>' +
-              (isPosted
-                ? '<span class="donetag">&#10003; posted</span>'
-                : '<button class="pbtn pmark" id="markposted">Mark posted</button>') +
+              rightButton +
             '</div>' +
-            '<p class="posthint" id="posthint">' +
-              (isPosted
-                ? 'Already posted. Open the post to check the comment is live.'
-                : 'Tap copy &amp; open, paste into the comment box on LinkedIn, submit, then come back and tap mark posted.') +
-            '</p>' +
+            '<p class="posthint" id="posthint">' + hint + '</p>' +
           '</div>' +
           '<div class="urn">' + esc(p.activity_urn) + '</div>' +
         '</div>' +
@@ -693,29 +774,46 @@ function renderCardDetail(kind){
     copyText(commentText, function(ok){
       el('posthint').textContent = ok
         ? 'Copied. Opening the post, long press the comment box and paste.'
-        : 'Could not auto copy. Select the comment text above and copy by hand, the post is opening now.';
+        : 'Could not auto copy. Select the comment above and copy by hand, the post is opening now.';
       window.open(liveUrl, '_blank', 'noopener');
+
+      // from Post pending, tapping copy-and-open files it into Recent
+      if(!isPosted && !isRecent){
+        fetch(ENDPOINT + '?action=torecent&urn=' + encodeURIComponent(p.activity_urn) + '&t=' + Date.now())
+          .then(function(r){ return r.json(); })
+          .then(function(d){
+            if(d.ok){
+              setTimeout(function(){
+                say('Moved to Recent');
+                detail = null;
+                view = 'recent';
+                load();
+              }, 1500);
+            }
+          })
+          .catch(function(){ /* opening the post still worked, ignore */ });
+      }
     });
   });
 
-  var mark = el('markposted');
-  if(mark){
-    mark.addEventListener('click', function(){
-      mark.disabled = true;
-      mark.textContent = 'Marking...';
+  var markNow = el('marknow');
+  if(markNow){
+    markNow.addEventListener('click', function(){
+      markNow.disabled = true;
+      markNow.textContent = 'Filing...';
       fetch(ENDPOINT + '?action=markposted&urn=' + encodeURIComponent(p.activity_urn) + '&t=' + Date.now())
         .then(function(r){ return r.json(); })
         .then(function(d){
           if(!d.ok){ throw new Error(d.error || 'failed'); }
-          say('Marked posted');
+          say('Filed to Approved');
           detail = null;
-          view = 'postpending';
+          view = 'recent';
           load();
         })
         .catch(function(err){
-          mark.disabled = false;
-          mark.textContent = 'Mark posted';
-          say('Could not mark: ' + err.message, true);
+          markNow.disabled = false;
+          markNow.textContent = 'Mark posted now';
+          say('Could not file: ' + err.message, true);
         });
     });
   }
@@ -776,6 +874,7 @@ function renderRejected(){
 function render(){
   if(view === 'rejected'){ renderRejected(); }
   else if(view === 'postpending'){ detail ? renderCardDetail('postpending') : renderCardList('postpending'); }
+  else if(view === 'recent'){ detail ? renderCardDetail('recent') : renderCardList('recent'); }
   else if(view === 'posted'){ detail ? renderCardDetail('posted') : renderCardList('posted'); }
   else { renderQueue(); }
 }
@@ -800,6 +899,11 @@ function act(a){
     return;
   }
 
+  if(a === 'rewrite'){
+    openRewrite(p);
+    return;
+  }
+
   setBusy(true);
 
   send(p.activity_urn, a, text)
@@ -810,8 +914,6 @@ function act(a){
         p.decided_at = new Date().toISOString();
         postPending.unshift(p);
         say('Approved. Waiting in Post.');
-      } else if(a === 'rewrite'){
-        say('Marked for a rewrite.');
       } else {
         p.dropped_by = 'you';
         p.final_comment = text;
@@ -828,11 +930,62 @@ function act(a){
     });
 }
 
+function openRewrite(p){
+  var wrap = el('rewrite-modal');
+  if(wrap){ wrap.parentNode.removeChild(wrap); }
+
+  wrap = document.createElement('div');
+  wrap.id = 'rewrite-modal';
+  wrap.className = 'modal-back';
+  wrap.innerHTML =
+    '<div class="modal">' +
+      '<div class="modal-h">Tell Claude what to change</div>' +
+      '<p class="modal-sub">Your note goes back to the draft. It gets revised and returns to Review, usually within 15 minutes.</p>' +
+      '<div class="modal-draft">' + esc(el('ta') ? el('ta').value : p.draft_comment) + '</div>' +
+      '<textarea id="rwnote" placeholder="e.g. drop the telecom reference, make the question simpler, too formal, mention the pricing point instead"></textarea>' +
+      '<div class="modal-row">' +
+        '<button class="mbtn mcancel" id="rwcancel">Cancel</button>' +
+        '<button class="mbtn msend" id="rwsend">Send for rewrite</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(wrap);
+  el('rwnote').focus();
+
+  el('rwcancel').addEventListener('click', function(){
+    wrap.parentNode.removeChild(wrap);
+  });
+
+  el('rwsend').addEventListener('click', function(){
+    var note = el('rwnote').value.trim();
+    if(!note){ el('rwnote').focus(); return; }
+    var btn = el('rwsend');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    var curText = el('ta') ? el('ta').value : p.draft_comment;
+
+    send(p.activity_urn, 'rewrite', curText, note)
+      .then(function(){
+        wrap.parentNode.removeChild(wrap);
+        say('Sent for rewrite. Back in Review shortly.');
+        idx++;
+        renderQueue();
+      })
+      .catch(function(err){
+        btn.disabled = false;
+        btn.textContent = 'Send for rewrite';
+        say('Could not send: ' + err.message, true);
+      });
+  });
+}
+
 el('qbtn').addEventListener('click', function(){
   view = 'queue'; detail = null; render();
 });
 el('ppbtn').addEventListener('click', function(){
   view = 'postpending'; detail = null; render();
+});
+el('rcbtn').addEventListener('click', function(){
+  view = 'recent'; detail = null; render();
 });
 el('abtn').addEventListener('click', function(){
   view = 'posted'; detail = null; render();
