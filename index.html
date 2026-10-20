@@ -136,6 +136,9 @@ textarea{width:100%;min-height:132px;resize:vertical;display:block;padding:14px;
 textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .cnt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3)}
 .cnt.over{color:var(--rose)}
+.cpanel{margin-bottom:12px}
+.cta{min-height:96px}
+.capprove{margin-top:10px;width:100%}
 
 .said{font-size:15px;line-height:1.65;margin:0;padding:14px;
   background:var(--card2);border-radius:14px;border:1px solid var(--line2);
@@ -289,7 +292,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v9-apprv</span></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v10-3opt</span></div>
   <div class="pills">
     <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Rev</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
@@ -304,7 +307,6 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 
 <div class="bar" id="bar" style="display:none">
   <div class="barin">
-    <button class="btn bgo" data-a="approved">Approve &amp; post</button>
     <button class="btn bre" data-a="rewrite">Rewrite</button>
     <button class="btn bno" data-a="rejected">Don't</button>
     <button class="btn bsk" data-a="later">Later</button>
@@ -623,6 +625,25 @@ function renderQueue(){
   el('bar').style.display = '';
   var p = queue[idx];
 
+  var drafts = [p.draft_comment, p.draft_2, p.draft_3].filter(function(c){
+    return c && c.trim();
+  });
+  if(!drafts.length){ drafts = [p.draft_comment || '']; }
+
+  var cardsHtml = '';
+  for(var ci = 0; ci < drafts.length; ci++){
+    cardsHtml +=
+      '<div class="panel cpanel">' +
+        '<div class="ph"><span>Option ' + (ci + 1) + '</span>' +
+          '<span class="cnt" id="cnt' + ci + '">&nbsp;</span></div>' +
+        '<div class="pb">' +
+          '<textarea class="cta" id="ta' + ci + '" aria-label="Comment option ' + (ci + 1) + '">' +
+            esc(drafts[ci]) + '</textarea>' +
+          '<button class="pbtn pcopy capprove" data-i="' + ci + '">Approve this one</button>' +
+        '</div>' +
+      '</div>';
+  }
+
   el('stage').innerHTML =
     whoBlock(p) +
     '<div class="grid">' +
@@ -632,29 +653,60 @@ function renderQueue(){
           '<div class="ph"><span>Why this one</span></div>' +
           '<div class="pb"><p class="why">' + esc(p.reason) + '</p></div>' +
         '</div>' +
-        '<div class="panel">' +
-          '<div class="ph"><span>Your comment</span><span class="cnt" id="cnt">&nbsp;</span></div>' +
-          '<div class="pb"><textarea id="ta" aria-label="Your comment">' +
-            esc(p.draft_comment) + '</textarea></div>' +
-          '<div class="urn">' + esc(p.activity_urn) + '</div>' +
-        '</div>' +
+        cardsHtml +
+        '<div class="urn">' + esc(p.activity_urn) + '</div>' +
         postToggle(p) +
       '</div>' +
     '</div>';
 
-  var ta = el('ta');
-  var cnt = el('cnt');
-  function upd(){
-    var n = countWords(ta.value);
-    cnt.textContent = n + ' / 40';
-    cnt.className = n > 40 ? 'cnt over' : 'cnt';
+  for(var cj = 0; cj < drafts.length; cj++){
+    (function(k){
+      var ta = el('ta' + k);
+      var cnt = el('cnt' + k);
+      function upd(){
+        var n = countWords(ta.value);
+        cnt.textContent = n + ' / 40';
+        cnt.className = n > 40 ? 'cnt over' : 'cnt';
+      }
+      ta.addEventListener('input', upd);
+      upd();
+    })(cj);
   }
-  ta.addEventListener('input', upd);
-  upd();
+
+  var appBtns = el('stage').getElementsByClassName('capprove');
+  for(var ab = 0; ab < appBtns.length; ab++){
+    appBtns[ab].addEventListener('click', function(){
+      var k = this.getAttribute('data-i');
+      var ta = el('ta' + k);
+      approveText(ta ? ta.value : '');
+    });
+  }
 
   wireSizer(p);
   wireToggle();
   window.scrollTo(0, 0);
+}
+
+function approveText(text){
+  if(busy || view !== 'queue' || idx >= queue.length){ return; }
+  if(!text || !text.trim()){ say('Comment is empty', true); return; }
+  var p = queue[idx];
+  setBusy(true);
+  send(p.activity_urn, 'approved', text)
+    .then(function(){
+      p.final_comment = text;
+      p.status = 'approved';
+      p.decided_at = new Date().toISOString();
+      postPending.unshift(p);
+      say('Approved. Waiting in Post.');
+      idx++;
+      setBusy(false);
+      renderQueue();
+    })
+    .catch(function(err){
+      setBusy(false);
+      say('Not saved: ' + err.message, true);
+    });
 }
 
 /* ---------- post pending and posted ---------- */
@@ -1007,7 +1059,7 @@ function setBusy(on){
 function act(a){
   if(busy || view !== 'queue' || idx >= queue.length){ return; }
   var p = queue[idx];
-  var ta = el('ta');
+  var ta = el('ta0');
   var text = ta ? ta.value : '';
 
   if(a === 'later'){
@@ -1060,7 +1112,7 @@ function openRewrite(p){
     '<div class="modal">' +
       '<div class="modal-h">Tell Claude what to change</div>' +
       '<p class="modal-sub">Your note goes back to the draft. It gets revised and returns to Review, usually within 15 minutes.</p>' +
-      '<div class="modal-draft">' + esc(el('ta') ? el('ta').value : p.draft_comment) + '</div>' +
+      '<div class="modal-draft">' + esc(el('ta0') ? el('ta0').value : p.draft_comment) + '</div>' +
       '<textarea id="rwnote" placeholder="e.g. drop the telecom reference, make the question simpler, too formal, mention the pricing point instead"></textarea>' +
       '<div class="modal-row">' +
         '<button class="mbtn mcancel" id="rwcancel">Cancel</button>' +
@@ -1080,7 +1132,7 @@ function openRewrite(p){
     var btn = el('rwsend');
     btn.disabled = true;
     btn.textContent = 'Sending...';
-    var curText = el('ta') ? el('ta').value : p.draft_comment;
+    var curText = el('ta0') ? el('ta0').value : p.draft_comment;
 
     send(p.activity_urn, 'rewrite', curText, note)
       .then(function(){
