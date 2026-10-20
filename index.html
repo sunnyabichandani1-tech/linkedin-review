@@ -137,7 +137,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 .cnt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--tx3)}
 .cnt.over{color:var(--rose)}
 .cpanel{margin-bottom:12px}
-.cta{min-height:96px}
+.cta{min-height:96px;overflow:hidden;resize:none}
 .capprove{margin-top:10px;width:100%}
 
 .said{font-size:15px;line-height:1.65;margin:0;padding:14px;
@@ -292,7 +292,7 @@ textarea:focus{outline:none;border-color:var(--gold);background:#1E1E26}
 <body>
 
 <div class="top">
-  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v10-3opt</span></div>
+  <div class="brand"><div class="mark">S</div><b>Review</b><span style="font-size:9px;color:#63636F;margin-left:6px;font-family:monospace">v11-fit</span></div>
   <div class="pills">
     <button class="pill p-gold" id="qbtn"><b id="pcount">0</b><span>Rev</span></button>
     <button class="pill p-amber" id="ppbtn"><b id="ppcount">0</b><span>Post</span></button>
@@ -550,7 +550,7 @@ function embedPanel(p, withSizer){
     '<div class="ph"><span>As it appears on LinkedIn</span>' +
       (withSizer ? '<span class="size">' +
         '<button id="shrink" aria-label="Shorter">&#8722;</button>' +
-        '<em id="hval">' + p.embed_height + '</em>' +
+        '<em id="hval">' + renderHeight(p) + '</em>' +
         '<button id="grow" aria-label="Taller">+</button>' +
       '</span>' : '') +
     '</div>' +
@@ -587,7 +587,7 @@ function wireSizer(p){
   function resize(delta){
     p.embed_height = Math.max(300, Number(p.embed_height) + delta);
     el('fr').style.height = renderHeight(p) + 'px';
-    el('hval').textContent = p.embed_height;
+    el('hval').textContent = renderHeight(p);
   }
   g.addEventListener('click', function(){ resize(100); });
   el('shrink').addEventListener('click', function(){ resize(-100); });
@@ -667,6 +667,9 @@ function renderQueue(){
         var n = countWords(ta.value);
         cnt.textContent = n + ' / 40';
         cnt.className = n > 40 ? 'cnt over' : 'cnt';
+        // grow the box to fit the whole comment, no inner scrolling
+        ta.style.height = 'auto';
+        ta.style.height = (ta.scrollHeight + 2) + 'px';
       }
       ta.addEventListener('input', upd);
       upd();
